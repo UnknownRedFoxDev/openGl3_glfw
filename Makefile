@@ -5,7 +5,7 @@ BUILD_DIR := build
 
 SRCS := $(wildcard $(SRC_DIR)/*.cpp)
 OBJS := $(notdir $(SRCS:.cpp=.o))
-LIBS := -lGL -lglfw
+LIBS := -lGL -lglfw -lGLEW
 CXXFLAGS := -std=c++17 -Wall -Wextra -O2
 
 all: $(BUILD_DIR)/$(OUTPUT)
@@ -23,6 +23,6 @@ clean:
 	rm -f *.o
 
 run:
-	cd $(BUILD_DIR) && ./$(OUTPUT) && cd ..
+	./$(BUILD_DIR)/$(OUTPUT)
 
 .PHONY: all run clean
