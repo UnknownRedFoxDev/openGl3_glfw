@@ -2,19 +2,28 @@
 #include <GLFW/glfw3.h>
 
 #include <alloca.h>
+#include <cassert>
 #include <cstdio>
+#include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
-#include <sys/types.h>
 #define DEBUG 1
+
+typedef unsigned int uint;
+
+static std::string loadFile(std::string const& filepath) {
+	std::ifstream stream(filepath);
+	std::stringstream ss;
+	ss << stream.rdbuf();
+	return ss.str();
+}
 
 static uint CompileShader(uint type, const std::string& source) {
 	uint shaderID = glCreateShader(type);
 	size_t length = source.length();
 	if (!length) {
-#if DEBUG
 		fprintf(stderr, "%s:%d - Path provided is empty or out of scope\n", __FILE__, __LINE__);
-#endif
 		return 0;
 	}
 	const char* src = source.c_str();
@@ -30,11 +39,9 @@ static uint CompileShader(uint type, const std::string& source) {
 
 		char* log = (char*)alloca(length * sizeof(char));
         glGetShaderInfoLog(shaderID, length, &length, log);
-#if DEBUG
 		// Currently only working with vertex and fragment shader.
 		fprintf(stderr, "%s:%d - %s shader failed compilation.\n", __FILE__, __LINE__, type == GL_VERTEX_SHADER ? "Vertex" : "Fragment");
 		fprintf(stderr, "%s:%d - Log from shader infos: %s\n", __FILE__, __LINE__, log);
-#endif
 		glDeleteShader(shaderID);
 		return 0;
     }
@@ -42,10 +49,10 @@ static uint CompileShader(uint type, const std::string& source) {
 	return shaderID;
 }
 
-static uint CreateShader(const std::string& vertShaderPath, const std::string& fragShaderPath) {
+static uint CreateProgram(const std::string& vertShaderPath, const std::string& fragShaderPath) {
 	uint programID = glCreateProgram();
-	uint vs = CompileShader(GL_VERTEX_SHADER, vertShaderPath);
-	uint fs = CompileShader(GL_FRAGMENT_SHADER, vertShaderPath);
+	uint vs = CompileShader(GL_VERTEX_SHADER, loadFile(vertShaderPath));
+	uint fs = CompileShader(GL_FRAGMENT_SHADER, loadFile(fragShaderPath));
 	glAttachShader(programID, vs); // Merge vertex shader with the program
 	glAttachShader(programID, fs); // Merge fragment shader with the program
 	glLinkProgram(programID); // Links the program to the GPU for usage. -> will replace any default program !
@@ -56,13 +63,12 @@ static uint CreateShader(const std::string& vertShaderPath, const std::string& f
 	glGetProgramiv(programID, GL_VALIDATE_STATUS, &isValid);
 	if (!isValid) {
 		int length;
+		glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &length);
 
-		char log[512];
-		glGetProgramInfoLog(programID, 512, nullptr, log);
-#if DEBUG
+		char* log = (char*)alloca(length * sizeof(char));
+		glGetProgramInfoLog(programID, length, &length, log);
 		fprintf(stderr, "%s:%d - Program failed validation. See above for compile shader errors.\n", __FILE__, __LINE__);
 		fprintf(stderr, "%s:%d - Log from program infos: %s\n", __FILE__, __LINE__, log);
-#endif
 		glDeleteProgram(programID);
 		return 0;
 	}
@@ -111,6 +117,14 @@ int main(void) {
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
 	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), vertices, GL_STATIC_DRAW);
 
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+
+	uint programID = CreateProgram("res/shaders/shader.vert", "res/shaders/shader.frag");
+	assert(programID);
+
+	glUseProgram(programID);
+
 	while (!glfwWindowShouldClose(window)) {
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -124,6 +138,7 @@ int main(void) {
 		glfwPollEvents();
 	}
 
+	glDeleteProgram(programID);
 	glfwTerminate();
 	return 0;
 }
