@@ -88,6 +88,10 @@ int main(void) {
 		return -1;
 	}
 
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
 	window = glfwCreateWindow(800, 600, "Glfw learning with opengl <3", NULL, NULL);
 	if (!window) {
 #if DEBUG
@@ -118,6 +122,10 @@ int main(void) {
 		0, 1, 2,
 		2, 3, 0
 	};
+
+	uint vao;
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
 
 	// Binding the vertex buffer
 	uint vertexBufferID;
