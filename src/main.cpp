@@ -98,6 +98,7 @@ int main(void) {
 	}
 
 	glfwMakeContextCurrent(window);
+	glfwSwapInterval(1);
 
 	if (glewInit() != GLEW_OK) {
 #if DEBUG
@@ -106,30 +107,56 @@ int main(void) {
     return -3;
 	}
 
-	float vertices[6] = {
+	float vertices[] = {
 		-0.5f, -0.5f,
-		 0.0f, 0.5f,
-		 0.5f, -0.5f
+		 0.5f, -0.5f,
+		 0.5f,  0.5f,
+		-0.5f,  0.5f,
 	};
 
-	GLuint vertexBufferID;
+	uint indices[] = {
+		0, 1, 2,
+		2, 3, 0
+	};
+
+	// Binding the vertex buffer
+	uint vertexBufferID;
 	glGenBuffers(1, &vertexBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), vertices, GL_STATIC_DRAW);
 
+	// Setting the attributs for the vertex buffer
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
 
+	// Binding the element buffer object (serves as the indices for each vertex in the vertex buffer)
+	uint ebo;
+	glGenBuffers(1, &ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+
+	// Create a shader program and use it
 	uint programID = CreateProgram("res/shaders/shader.vert", "res/shaders/shader.frag");
 	assert(programID);
-
 	glUseProgram(programID);
 
+	int location = glGetUniformLocation(programID, "uColour");
+	assert(location != -1);
+	glUniform4f(location, 0.45, 0.55, 0.60, 1.00);
+
+	float red = 0.45f;
+	float val = 0.05f;
 	while (!glfwWindowShouldClose(window)) {
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glUniform4f(location, red, 0.55, 0.60, 1.00);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+		if (red > 1) val = -0.05f;
+		else if (red < 0) val = 0.05f;
+
+		red += val;
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
