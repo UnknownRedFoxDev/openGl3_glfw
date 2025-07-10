@@ -149,7 +149,7 @@ int main(void) {
 	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 
 	float red = 0.45f;
-	float val = 0.05f;
+	float val = 0.15f;
 	while (!glfwWindowShouldClose(window)) {
 		/* Render here */
 		GLCall(glClear(GL_COLOR_BUFFER_BIT));
