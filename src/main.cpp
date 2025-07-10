@@ -9,27 +9,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#define ASSERT(x) if (!(x)) exit(-1);
-#define GLCall(x) GLClearError();\
-	x;\
-	ASSERT(GLLogCall(#x, __FILE__, __LINE__))
-#define DEBUG 1
-
-typedef unsigned int uint;
-
-static void GLClearError() {
-	while (glGetError() != GL_NO_ERROR);
-}
-
-// Returns `true` when no error is detected.
-// Returns `false` otherwise.
-static bool GLLogCall(const char* funcName, const char* filename, int line) {
-	while (GLenum error = glGetError()) {
-		std::cout << filename << ":" << line << " - OpenGL ERROR (" << error << "): from " << funcName << std::endl;
-		return false;
-	}
-	return true;
-}
+#include "Renderer.h"
 
 static std::string loadFile(std::string const& filepath) {
 	std::ifstream stream(filepath);
