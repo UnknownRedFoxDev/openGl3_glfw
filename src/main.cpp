@@ -8,7 +8,9 @@
 #include <sstream>
 #include "Renderer.h"
 #include "VertexBuffer.h"
+#include "VertexArray.h"
 #include "IndexBuffer.h"
+#include "VertexBufferLayout.h"
 
 static std::string loadFile(std::string const& filepath) {
 	std::ifstream stream(filepath);
@@ -121,16 +123,16 @@ int main(void) {
 		2, 3, 0
 	};
 
-	uint vao;
-	GLCall(glGenVertexArrays(1, &vao));
-	GLCall(glBindVertexArray(vao));
+	// Creating the vertex array, buffer and layout
+	VertexArray va;
+	VertexBuffer vb(vertices, 8 * sizeof(float));
+	VertexBufferLayout layout;
 
-	// Binding the vertex buffer
-	VertexBuffer vbo(vertices, 8 * sizeof(float));
+	// Create a layout with two elements
+	layout.Push<float>(2);
 
-	// Setting the attributs for the vertex buffer
-	GLCall(glEnableVertexAttribArray(0));
-	GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
+	// Add that layout and buffer to the vertex array
+	va.AddBuffer(vb, layout);
 
 	// Binding the element buffer object (serves as the indices for each vertex in the vertex buffer)
 	IndexBuffer ebo(indices, 6);
@@ -149,7 +151,7 @@ int main(void) {
 	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 
 	float red = 0.45f;
-	float val = 0.15f;
+	float val = 0.05f;
 	while (!glfwWindowShouldClose(window)) {
 		/* Render here */
 		GLCall(glClear(GL_COLOR_BUFFER_BIT));
@@ -157,7 +159,7 @@ int main(void) {
 		GLCall(glUseProgram(programID));
 		GLCall(glUniform4f(location, red, 0.55, 0.60, 1.00));
 
-		GLCall(glBindVertexArray(vao));
+		va.Bind();
 		ebo.Bind();
 
 		GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));

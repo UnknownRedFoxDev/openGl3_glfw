@@ -1,44 +1,37 @@
-#pragma once
+#ifndef VERTEX_BUFFER_LAYOUT_H
+#define VERTEX_BUFFER_LAYOUT_H
 
 #include <vector>
-#include <GL/glew.h>
+#include <GL/glew.h> // For OpenGL types
 
 struct VertexBufferElement {
-	unsigned int count;
-	unsigned int GLType;
-	bool normalized;
+    GLenum type;
+    unsigned int count;
+    GLboolean normalized;
+
+    static unsigned int GetTypeSize(GLenum type) {
+        switch (type) {
+            case GL_FLOAT:         return sizeof(GLfloat);
+            case GL_UNSIGNED_INT:  return sizeof(GLuint);
+            case GL_UNSIGNED_BYTE: return sizeof(GLubyte);
+        }
+        return 0;
+    }
 };
 
 class VertexBufferLayout {
-	private:
-		std::vector<VertexBufferElement> mElements;
+private:
+    std::vector<VertexBufferElement> mElements;
+    unsigned int mStride;
 
-		unsigned int mStride;
-	public:
-		VertexBufferLayout() : mStride(0) {
-		}
+public:
+    VertexBufferLayout() : mStride(0) {}
 
-		template<typename T>
-		void Push(unsigned int count) { static_assert(false); }
+	template<typename T>
+	void Push(unsigned int count);
 
-		template<>
-		void Push<float>(unsigned int count) {
-			mElements.push_back({count, GL_FLOAT, false});
-			mStride += sizeof(GLfloat); // Somewhat hardcoded
-		}
-
-		template<>
-		void Push<unsigned int>(unsigned int count) {
-			mElements.push_back({count, GL_UNSIGNED_INT, false});
-			mStride += sizeof(GLuint); // Somewhat hardcoded
-		}
-
-		template<>
-		void Push<unsigned char>(unsigned int count) {
-			mElements.push_back({count, GL_UNSIGNED_BYTE, true});
-			mStride += sizeof(GLbyte); // Somewhat hardcoded
-		}
-
-		inline const std::vector<VertexBufferElement> GetElements() const { return mElements; }
-		inline unsigned int GetStride() const { return mStride; }
+    inline const std::vector<VertexBufferElement>& GetElements() const { return mElements; }
+    inline unsigned int GetStride() const { return mStride; }
 };
+
+#endif

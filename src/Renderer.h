@@ -4,7 +4,7 @@
 #include <GL/glew.h>
 #include <cstdlib>
 
-#define ASSERT(x) if (!(x)) exit(-1);
+#define ASSERT(x) if (!(x)) exit(-1)
 #define GLCall(x) GLClearError();\
 	x;\
 	ASSERT(GLLogCall(#x, __FILE__, __LINE__))
