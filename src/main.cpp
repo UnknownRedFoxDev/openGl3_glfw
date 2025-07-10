@@ -1,15 +1,14 @@
-// :s/^\([^aA-zZ]*\)\([^;]*\)/\1GLCall(\2) my beloved
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include <alloca.h>
 #include <cassert>
-#include <cstdio>
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include <string>
 #include "Renderer.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
 static std::string loadFile(std::string const& filepath) {
 	std::ifstream stream(filepath);
@@ -127,37 +126,41 @@ int main(void) {
 	GLCall(glBindVertexArray(vao));
 
 	// Binding the vertex buffer
-	uint vertexBufferID;
-	GLCall(glGenBuffers(1, &vertexBufferID));
-	GLCall(glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID));
-	GLCall(glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), vertices, GL_STATIC_DRAW));
+	VertexBuffer vbo(vertices, 8 * sizeof(float));
 
 	// Setting the attributs for the vertex buffer
 	GLCall(glEnableVertexAttribArray(0));
 	GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
 
 	// Binding the element buffer object (serves as the indices for each vertex in the vertex buffer)
-	uint ebo;
-	GLCall(glGenBuffers(1, &ebo));
-	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
-	GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW));
+	IndexBuffer ebo(indices, 6);
 
 	// Create a shader program and use it
 	uint programID = CreateProgram("res/shaders/shader.vert", "res/shaders/shader.frag");
 	GLCall(glUseProgram(programID));
 
 	GLCall(int location = glGetUniformLocation(programID, "uColour"));
-	assert(location != -1);
+	ASSERT(location != -1);
 	GLCall(glUniform4f(location, 0.45, 0.55, 0.60, 1.00));
+
+	GLCall(glBindVertexArray(0));
+	GLCall(glUseProgram(0));
+	GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 
 	float red = 0.45f;
 	float val = 0.05f;
 	while (!glfwWindowShouldClose(window)) {
 		/* Render here */
-		glClear(GL_COLOR_BUFFER_BIT);
+		GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
+		GLCall(glUseProgram(programID));
 		GLCall(glUniform4f(location, red, 0.55, 0.60, 1.00));
-		GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
+
+		GLCall(glBindVertexArray(vao));
+		ebo.Bind();
+
+		GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
 		if (red > 1) val = -0.05f;
 		else if (red < 0) val = 0.05f;

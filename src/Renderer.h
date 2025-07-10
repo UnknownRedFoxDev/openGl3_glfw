@@ -2,6 +2,7 @@
 
 // :s/^\([^aA-zZ]*\)\([^;]*\)/\1GLCall(\2) my beloved
 #include <GL/glew.h>
+#include <cstdlib>
 
 #define ASSERT(x) if (!(x)) exit(-1);
 #define GLCall(x) GLClearError();\
