@@ -71,11 +71,6 @@ uint Shader::CreateProgram(const std::string& vertShaderPath, const std::string&
 	return programID;
 }
 
-unsigned int Shader::GetUniformLocation(const std::string& name) {
-	GLCall(int location = glGetUniformLocation(mRendererID, name.c_str()));
-	ASSERT(location != -1);
-	return location;
-}
 
 Shader::Shader(const std::string& vertShaderPath, const std::string& fragShaderPath)
 	: mVertShaderPath(vertShaderPath), mFragShaderPath(fragShaderPath), mRendererID(0) {
@@ -92,6 +87,16 @@ void Shader::Bind() const {
 
 void Shader::Unbind() const {
 	GLCall(glUseProgram(0));
+}
+
+unsigned int Shader::GetUniformLocation(const std::string& name) {
+	if (mUniformLocationCache.find(name) != mUniformLocationCache.end())
+		return mUniformLocationCache[name];
+
+	GLCall(int location = glGetUniformLocation(mRendererID, name.c_str()));
+	ASSERT(location != -1);
+	mUniformLocationCache[name] = location;
+	return location;
 }
 
 void Shader::SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3) {

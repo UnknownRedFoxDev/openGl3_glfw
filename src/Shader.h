@@ -1,4 +1,5 @@
 #include <string>
+#include <unordered_map>
 
 #ifndef SHADER_H
 #define SHADER_H
@@ -7,8 +8,9 @@ class Shader {
 	private:
 		std::string mVertShaderPath;
 		std::string mFragShaderPath;
-
 		unsigned int mRendererID;
+		std::unordered_map<std::string, int> mUniformLocationCache;
+
 		unsigned int GetUniformLocation(const std::string& name);
 		std::string loadFile(std::string const& filepath);
 		uint CompileShader(uint type, const std::string& source);
