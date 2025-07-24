@@ -2,9 +2,13 @@
 
 // :s/^\([^aA-zZ]*\)\([^;]*\)/\1GLCall(\2) my beloved
 #include <GL/glew.h>
+#include <iostream>
 #include <cstdlib>
 
-#define ASSERT(x) if (!(x)) exit(-1)
+#define ASSERT(x) if (!(x)) {\
+	std::cout << __FILE__ << ":" << __LINE__ << " - \"" << #x << "\" failed assertion" << std::endl; \
+	exit(-1); \
+}
 #define GLCall(x) GLClearError();\
 	x;\
 	ASSERT(GLLogCall(#x, __FILE__, __LINE__))
@@ -17,3 +21,8 @@ void GLClearError();
 // Returns `true` when no error is detected.
 // Returns `false` otherwise.
 bool GLLogCall(const char* funcName, const char* filename, int line);
+
+
+class Renderer {
+
+};

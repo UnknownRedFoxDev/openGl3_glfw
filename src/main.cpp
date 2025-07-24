@@ -6,6 +6,7 @@
 
 #include "Renderer.h"
 
+#include "Texture.h"
 #include "VertexArray.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
@@ -46,10 +47,10 @@ int main(void) {
 	}
 
 	float vertices[] = {
-		-0.5f, -0.5f,
-		 0.5f, -0.5f,
-		 0.5f,  0.5f,
-		-0.5f,  0.5f,
+		-0.5f, -0.5f, 0.0f, 0.0f,
+		 0.5f, -0.5f, 1.0f, 0.0f,
+		 0.5f,  0.5f, 1.0f, 1.0f,
+		-0.5f,  0.5f, 0.0f, 1.0f,
 	};
 
 	uint indices[] = {
@@ -59,10 +60,11 @@ int main(void) {
 
 	// Creating the vertex array, buffer and layout
 	VertexArray va;
-	VertexBuffer vb(vertices, 8 * sizeof(float));
+	VertexBuffer vb(vertices, 4 * 4 * sizeof(float));
 	VertexBufferLayout layout;
 
 	// Create a layout with two elements
+	layout.Push<float>(2);
 	layout.Push<float>(2);
 
 	// Add that layout and buffer to the vertex array
@@ -78,10 +80,14 @@ int main(void) {
 	std::string colourUniform = "uColour";
 	shaderProgram.SetUniform4f(colourUniform, 0.45, 0.55, 0.60, 1.00);
 
+	// Texture texture("res/textures/test2.png");
+	// texture.Bind();
+	// shaderProgram.SetUniform1i("uTexture", 0);
+
 	va.Unbind();
-	shaderProgram.Unbind();
 	vb.Unbind();
 	eb.Unbind();
+	shaderProgram.Unbind();
 
 	float red = 0.45f;
 	float val = 0.05f;
@@ -90,6 +96,7 @@ int main(void) {
 		GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
 		shaderProgram.Bind();
+		// shaderProgram.SetUniform1i("uTexture", 0);
 		shaderProgram.SetUniform4f(colourUniform, red, 0.55, 0.60, 1.00);
 
 		va.Bind();

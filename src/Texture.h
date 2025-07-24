@@ -1,10 +1,11 @@
 #pragma once
 
- #include <string>
+#include <string>
+
 class Texture {
 	 private:
 		 unsigned int m_Renderer;
-		 int m_Width, m_Height;
+		 int m_Width, m_Height, m_BitPerPixel;
 		 std::string m_FilePath;
 		 unsigned char* m_DataBuffer;
 	public:
