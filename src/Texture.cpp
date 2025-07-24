@@ -3,7 +3,7 @@
 #include "vendor/stb_image/stb_image.h"
 #include <iostream>
 
-Texture::Texture(const std::string& path) : m_Renderer(0),  m_Width(0), m_Height(0), m_BitPerPixel(0), m_FilePath(path), m_DataBuffer(0)  {
+Texture::Texture(const std::string& path) : m_Renderer(0), m_Width(0), m_Height(0), m_BitPerPixel(0), m_FilePath(path), m_DataBuffer(0)  {
 	stbi_set_flip_vertically_on_load(1);
 	std::cout << "Image flipped set" << std::endl;
 	m_DataBuffer = stbi_load(path.c_str(), &m_Width, &m_Height, &m_BitPerPixel, 4);
@@ -23,14 +23,15 @@ Texture::Texture(const std::string& path) : m_Renderer(0),  m_Width(0), m_Height
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 	std::cout << "Fourth parameter set" << std::endl;
 
-	GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_DataBuffer));
-	std::cout << "Created openGL Texture Image from data" << std::endl;
-	GLCall(glBindTexture(GL_TEXTURE_2D, 0));
-	std::cout << "Unbinded Texture" << std::endl;
-
-	if (m_DataBuffer) stbi_image_free(m_DataBuffer);
-	std::cout << "Freed memory" << std::endl;
-
+	if (m_DataBuffer) {
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_DataBuffer));
+		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
+		stbi_image_free(m_DataBuffer);
+	} else {
+		std::cout << "\n" << __FILE__ << ":" << __LINE__ << " - Error: Failed to load texture" << std::endl;
+		std::cout << stbi_failure_reason() << std::endl;
+		exit(1);
+	}
 }
 
 Texture::~Texture(){

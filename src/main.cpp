@@ -13,7 +13,6 @@
 #include "VertexBufferLayout.h"
 #include "Shader.h"
 
-
 int main(void) {
 	GLFWwindow* window;
 	if (!glfwInit()) {
@@ -58,6 +57,9 @@ int main(void) {
 		2, 3, 0
 	};
 
+	GLCall(glEnable(GL_BLEND));
+	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
 	// Creating the vertex array, buffer and layout
 	VertexArray va;
 	VertexBuffer vb(vertices, 4 * 4 * sizeof(float));
@@ -76,33 +78,32 @@ int main(void) {
 	// Create a shader program and use it
 	Shader shaderProgram("res/shaders/shader.vert", "res/shaders/shader.frag");
 	shaderProgram.Bind();
-
 	std::string colourUniform = "uColour";
-	shaderProgram.SetUniform4f(colourUniform, 0.45, 0.55, 0.60, 1.00);
+	// shaderProgram.SetUniform4f(colourUniform, 0.45, 0.55, 0.60, 1.00);
 
-	// Texture texture("res/textures/test2.png");
-	// texture.Bind();
-	// shaderProgram.SetUniform1i("uTexture", 0);
+	Renderer renderer;
 
 	va.Unbind();
 	vb.Unbind();
 	eb.Unbind();
 	shaderProgram.Unbind();
 
+	Texture texture("res/textures/test.png");
+	texture.Bind();
+	shaderProgram.Bind();
+	std::string textureUniform = "uTexture";
+	shaderProgram.SetUniform1i(textureUniform, 0);
+
 	float red = 0.45f;
 	float val = 0.05f;
 	while (!glfwWindowShouldClose(window)) {
-		/* Render here */
-		GLCall(glClear(GL_COLOR_BUFFER_BIT));
+		renderer.Clear();
 
 		shaderProgram.Bind();
-		// shaderProgram.SetUniform1i("uTexture", 0);
-		shaderProgram.SetUniform4f(colourUniform, red, 0.55, 0.60, 1.00);
+		shaderProgram.SetUniform1i(textureUniform, 0);
+		// shaderProgram.SetUniform4f(colourUniform, red, 0.55, 0.60, 1.00);
 
-		va.Bind();
-		eb.Bind();
-
-		GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+		renderer.Draw(va, eb, shaderProgram);
 
 		if (red > 1) val = -0.05f;
 		else if (red < 0) val = 0.05f;

@@ -1,6 +1,9 @@
 #pragma once
 
 // :s/^\([^aA-zZ]*\)\([^;]*\)/\1GLCall(\2) my beloved
+#include "IndexBuffer.h"
+#include "VertexArray.h"
+#include "Shader.h"
 #include <GL/glew.h>
 #include <iostream>
 #include <cstdlib>
@@ -24,5 +27,7 @@ bool GLLogCall(const char* funcName, const char* filename, int line);
 
 
 class Renderer {
-
+public:
+	void Draw(const VertexArray& vao, const IndexBuffer& ibo, const Shader& shaderProgram) const;
+	void Clear() const;
 };
