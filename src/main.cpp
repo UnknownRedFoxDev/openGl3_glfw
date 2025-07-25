@@ -5,13 +5,15 @@
 #include <iostream>
 
 #include "Renderer.h"
-
 #include "Texture.h"
 #include "VertexArray.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "VertexBufferLayout.h"
 #include "Shader.h"
+
+#include "vendor/glm/glm.hpp"
+#include "vendor/glm/gtc/matrix_transform.hpp"
 
 int main(void) {
 	GLFWwindow* window;
@@ -52,6 +54,9 @@ int main(void) {
 		-0.5f,  0.5f, 0.0f, 1.0f,
 	};
 
+
+#include "vendor/glm/glm.hpp"
+#include "vendor/glm/gtc/matrix_transform.hpp"
 	uint indices[] = {
 		0, 1, 2,
 		2, 3, 0
@@ -75,11 +80,17 @@ int main(void) {
 	// Binding the element buffer object (serves as the indices for each vertex in the vertex buffer)
 	IndexBuffer eb(indices, 6);
 
+
+	glm::mat4 projectionMatrix = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, 1.0f, 1.0f);
+
 	// Create a shader program and use it
 	Shader shaderProgram("res/shaders/shader.vert", "res/shaders/shader.frag");
 	shaderProgram.Bind();
-	std::string colourUniform = "uColour";
-	// shaderProgram.SetUniform4f(colourUniform, 0.45, 0.55, 0.60, 1.00);
+
+	Texture texture("res/textures/test.png");
+	texture.Bind();
+	std::string textureUniform = "uTexture";
+	shaderProgram.SetUniform1i(textureUniform, 0);
 
 	Renderer renderer;
 
@@ -88,27 +99,14 @@ int main(void) {
 	eb.Unbind();
 	shaderProgram.Unbind();
 
-	Texture texture("res/textures/test.png");
-	texture.Bind();
-	shaderProgram.Bind();
-	std::string textureUniform = "uTexture";
-	shaderProgram.SetUniform1i(textureUniform, 0);
 
-	float red = 0.45f;
-	float val = 0.05f;
 	while (!glfwWindowShouldClose(window)) {
 		renderer.Clear();
 
 		shaderProgram.Bind();
 		shaderProgram.SetUniform1i(textureUniform, 0);
-		// shaderProgram.SetUniform4f(colourUniform, red, 0.55, 0.60, 1.00);
 
 		renderer.Draw(va, eb, shaderProgram);
-
-		if (red > 1) val = -0.05f;
-		else if (red < 0) val = 0.05f;
-
-		red += val;
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
