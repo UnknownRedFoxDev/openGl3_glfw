@@ -54,9 +54,6 @@ int main(void) {
 		-0.5f,  0.5f, 0.0f, 1.0f,
 	};
 
-
-#include "vendor/glm/glm.hpp"
-#include "vendor/glm/gtc/matrix_transform.hpp"
 	uint indices[] = {
 		0, 1, 2,
 		2, 3, 0
@@ -80,12 +77,17 @@ int main(void) {
 	// Binding the element buffer object (serves as the indices for each vertex in the vertex buffer)
 	IndexBuffer eb(indices, 6);
 
-
-	glm::mat4 projectionMatrix = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, 1.0f, 1.0f);
+	//othro-cartisian plane so you multiply the bounds by 2 to get the ascept ratio (e.g. 2.0f x2 = 4 : 1.5f x 2 = 3, thus 4:3)
+	// so for 16:9 it's -8.0f, 8.0f, -4.5f, 4.5f, -1.0f, 1.0f
+	// I'd assume that it's -x, x, -y, y, -z, z
+	glm::mat4 projectionMatrix = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+	// glm::mat4 projectionMatrix = glm::ortho(-0.5f, 0.5f, -0.5f, 0.5f, -0.5f, 0.5f);
 
 	// Create a shader program and use it
 	Shader shaderProgram("res/shaders/shader.vert", "res/shaders/shader.frag");
 	shaderProgram.Bind();
+	// shaderProgram.SetUniform4f("u_Colour", 0.8f, 0.3f, 0.8f, 1.0f);
+	shaderProgram.SetUniformMat4f("u_MVP", projectionMatrix);
 
 	Texture texture("res/textures/test.png");
 	texture.Bind();
@@ -105,6 +107,7 @@ int main(void) {
 
 		shaderProgram.Bind();
 		shaderProgram.SetUniform1i(textureUniform, 0);
+		shaderProgram.SetUniformMat4f("u_MVP", projectionMatrix);
 
 		renderer.Draw(va, eb, shaderProgram);
 
