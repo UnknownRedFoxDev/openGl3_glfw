@@ -52,10 +52,10 @@ int main(void) {
 	}
 
 	float vertices[] = {
-		100.0f, 100.0f, 0.0f, 0.0f,
-		200.0f, 100.0f, 1.0f, 0.0f,
-		200.0f, 200.0f, 1.0f, 1.0f,
-		100.0f, 200.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 0.0f, 0.0f,
+		100.0f, 0.0f, 1.0f, 0.0f,
+		100.0f, 100.0f, 1.0f, 1.0f,
+		0.0f, 100.0f, 0.0f, 1.0f,
 	};
 
 	uint indices[] = {
@@ -87,8 +87,13 @@ int main(void) {
 	glm::mat4 projectionMatrix = glm::ortho(0.0f, (float)(windowWidth), 0.0f, (float)(windowHeight), -1.0f, 1.0f);
 
 	// position of camera;
-	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(300, 0, 0));
-	glm::mat4 mvp = projectionMatrix * view;
+	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(200, 0, 0));
+
+	// Change the position of the cube
+	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(300, 200, 0));
+
+	// Result of everything combined
+	glm::mat4 mvp = projectionMatrix * view * model;
 
 	// Create a shader program and use it
 	Shader shaderProgram("res/shaders/shader.vert", "res/shaders/shader.frag");
