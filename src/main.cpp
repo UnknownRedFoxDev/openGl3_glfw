@@ -16,11 +16,11 @@
 #include "vendor/glm/glm.hpp"
 #include "vendor/glm/gtc/matrix_transform.hpp"
 
+#include "vendor/ImGui/imgui.h"
+#include "vendor/ImGui/imgui_impl_glfw.h"
+#include "vendor/ImGui/imgui_impl_opengl3.h"
+
 int main(void) {
-	GLFWwindow* window;
-
-	constexpr int windowWidth = 960, windowHeight = 540;
-
 	if (!glfwInit()) {
 #if DEBUG
 		fprintf(stderr, "%s:%i - Unable to initialise glfw\n", __FILE__, __LINE__);
@@ -28,6 +28,11 @@ int main(void) {
 		return -1;
 	}
 
+	float main_scale = ImGui_ImplGlfw_GetContentScaleForMonitor(glfwGetPrimaryMonitor());
+	GLFWwindow* window;
+
+	constexpr int windowWidth = 960, windowHeight = 540;
+	const char* glsl_version = "#version 130";
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -86,20 +91,13 @@ int main(void) {
 	// I'd assume that it's -x, x, -y, y, -z, z
 	glm::mat4 projectionMatrix = glm::ortho(0.0f, (float)(windowWidth), 0.0f, (float)(windowHeight), -1.0f, 1.0f);
 
-	// position of camera;
-	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(200, 0, 0));
-
-	// Change the position of the cube
-	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(300, 200, 0));
-
-	// Result of everything combined
-	glm::mat4 mvp = projectionMatrix * view * model;
+	glm::vec3 camera_pos(200, 200, 0);
+	glm::vec3 model_pos(0, 0, 0);
 
 	// Create a shader program and use it
 	Shader shaderProgram("res/shaders/shader.vert", "res/shaders/shader.frag");
 	shaderProgram.Bind();
 	// shaderProgram.SetUniform4f("u_Colour", 0.8f, 0.3f, 0.8f, 1.0f);
-	shaderProgram.SetUniformMat4f("u_MVP", mvp);
 
 	Texture texture("res/textures/test.png");
 	texture.Bind();
@@ -113,17 +111,64 @@ int main(void) {
 	eb.Unbind();
 	shaderProgram.Unbind();
 
+	// ImGui Stuff Here
+	ImGui::CreateContext();
+	// ImGuiIO& io = ImGui::GetIO(); (void)io;
+	// io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+
+    // Setup scaling
+    ImGuiStyle& style = ImGui::GetStyle();
+	style.ScaleAllSizes(main_scale);
+	style.FontScaleDpi = main_scale;
+
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init(glsl_version);
+
+	// Main Loop
 	while (!glfwWindowShouldClose(window)) {
+		/* Poll for and process events */
+		glfwPollEvents();
+		if (glfwGetWindowAttrib(window, GLFW_ICONIFIED)) {
+			ImGui_ImplGlfw_Sleep(10);
+			continue;
+		}
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		{
+			ImGui::Begin("Debug");
+			ImGui::DragFloat3("Camera position", &camera_pos.x, 1.0f, 0.0f, (float)(windowWidth), "%.2f");
+			ImGui::DragFloat3("Model position", &model_pos.x, 1.0f, 0.0f, (float)(windowWidth), "%.2f");
+			ImGui::End();
+		}
+
 		renderer.Clear();
+
+		glm::mat4 view = glm::translate(glm::mat4(1.0f), camera_pos);
+		glm::mat4 model = glm::translate(glm::mat4(1.0f), model_pos);
+		glm::mat4 mvp = projectionMatrix * view * model;
+
+		shaderProgram.Bind();
+		shaderProgram.SetUniformMat4f("u_MVP", mvp);
+
 		renderer.Draw(va, eb, shaderProgram);
+
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
-
-		/* Poll for and process events */
-		glfwPollEvents();
 	}
+	ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
+    glfwDestroyWindow(window);
 	glfwTerminate();
 	return 0;
 }
