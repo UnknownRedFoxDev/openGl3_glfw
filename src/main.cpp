@@ -12,11 +12,15 @@
 #include "VertexBufferLayout.h"
 #include "Shader.h"
 
+#include "vendor/glm/ext/matrix_transform.hpp"
 #include "vendor/glm/glm.hpp"
 #include "vendor/glm/gtc/matrix_transform.hpp"
 
 int main(void) {
 	GLFWwindow* window;
+
+	constexpr int windowWidth = 960, windowHeight = 540;
+
 	if (!glfwInit()) {
 #if DEBUG
 		fprintf(stderr, "%s:%i - Unable to initialise glfw\n", __FILE__, __LINE__);
@@ -28,7 +32,7 @@ int main(void) {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	window = glfwCreateWindow(1920, 1080, "Glfw learning with opengl <3", NULL, NULL);
+	window = glfwCreateWindow(windowWidth, windowHeight, "Glfw learning with opengl <3", NULL, NULL);
 	if (!window) {
 #if DEBUG
 		fprintf(stderr, "%s:%i - Unable to create window\n", __FILE__, __LINE__);
@@ -48,10 +52,10 @@ int main(void) {
 	}
 
 	float vertices[] = {
-		-0.5f, -0.5f, 0.0f, 0.0f,
-		 0.5f, -0.5f, 1.0f, 0.0f,
-		 0.5f,  0.5f, 1.0f, 1.0f,
-		-0.5f,  0.5f, 0.0f, 1.0f,
+		100.0f, 100.0f, 0.0f, 0.0f,
+		200.0f, 100.0f, 1.0f, 0.0f,
+		200.0f, 200.0f, 1.0f, 1.0f,
+		100.0f, 200.0f, 0.0f, 1.0f,
 	};
 
 	uint indices[] = {
@@ -77,17 +81,20 @@ int main(void) {
 	// Binding the element buffer object (serves as the indices for each vertex in the vertex buffer)
 	IndexBuffer eb(indices, 6);
 
-	//othro-cartisian plane so you multiply the bounds by 2 to get the ascept ratio (e.g. 2.0f x2 = 4 : 1.5f x 2 = 3, thus 4:3)
+	// ortho-cartisian plane so you multiply the bounds by 2 to get the ascept ratio (e.g. 2.0f x2 = 4 : 1.5f x 2 = 3, thus 4:3)
 	// so for 16:9 it's -8.0f, 8.0f, -4.5f, 4.5f, -1.0f, 1.0f
 	// I'd assume that it's -x, x, -y, y, -z, z
-	glm::mat4 projectionMatrix = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
-	// glm::mat4 projectionMatrix = glm::ortho(-0.5f, 0.5f, -0.5f, 0.5f, -0.5f, 0.5f);
+	glm::mat4 projectionMatrix = glm::ortho(0.0f, (float)(windowWidth), 0.0f, (float)(windowHeight), -1.0f, 1.0f);
+
+	// position of camera;
+	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(300, 0, 0));
+	glm::mat4 mvp = projectionMatrix * view;
 
 	// Create a shader program and use it
 	Shader shaderProgram("res/shaders/shader.vert", "res/shaders/shader.frag");
 	shaderProgram.Bind();
 	// shaderProgram.SetUniform4f("u_Colour", 0.8f, 0.3f, 0.8f, 1.0f);
-	shaderProgram.SetUniformMat4f("u_MVP", projectionMatrix);
+	shaderProgram.SetUniformMat4f("u_MVP", mvp);
 
 	Texture texture("res/textures/test.png");
 	texture.Bind();
@@ -101,14 +108,8 @@ int main(void) {
 	eb.Unbind();
 	shaderProgram.Unbind();
 
-
 	while (!glfwWindowShouldClose(window)) {
 		renderer.Clear();
-
-		shaderProgram.Bind();
-		shaderProgram.SetUniform1i(textureUniform, 0);
-		shaderProgram.SetUniformMat4f("u_MVP", projectionMatrix);
-
 		renderer.Draw(va, eb, shaderProgram);
 
 		/* Swap front and back buffers */
