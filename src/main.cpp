@@ -29,7 +29,6 @@ int main(void) {
 		return -1;
 	}
 
-	float main_scale = ImGui_ImplGlfw_GetContentScaleForMonitor(glfwGetPrimaryMonitor());
 	GLFWwindow* window;
 
 	constexpr int windowWidth = 960, windowHeight = 540;
