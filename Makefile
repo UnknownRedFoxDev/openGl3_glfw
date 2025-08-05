@@ -8,7 +8,7 @@ SRCS := $(shell find $(SRC_DIR) -name '*.cpp')
 OBJS := $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SRCS))
 
 LIBS := -lGL -lglfw -lGLEW
-CXXFLAGS := -std=c++17 -Wall -Wextra -O2
+CXXFLAGS := -std=c++17 -Wall -Wextra -O0 -g
 
 all: $(BUILD_DIR)/$(OUTPUT)
 

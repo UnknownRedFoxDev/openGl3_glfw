@@ -4,7 +4,7 @@
 
 namespace test {
 
-	class TestClearColor {
+	class TestClearColor : public Test {
 		public:
 			TestClearColor();
 			~TestClearColor();
