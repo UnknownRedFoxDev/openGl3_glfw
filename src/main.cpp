@@ -5,23 +5,17 @@
 #include <iostream>
 
 #include "Renderer.h"
-#include "Texture.h"
-#include "VertexArray.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-#include "VertexBufferLayout.h"
-#include "Shader.h"
 
 #include "tests/Test.h"
-#include "vendor/glm/ext/matrix_transform.hpp"
-#include "vendor/glm/glm.hpp"
-#include "vendor/glm/gtc/matrix_transform.hpp"
+#include "tests/TestTexture2D.h"
 
 #include "vendor/ImGui/imgui.h"
 #include "vendor/ImGui/imgui_impl_glfw.h"
 #include "vendor/ImGui/imgui_impl_opengl3.h"
 
 #include "tests/TestClearColor.h"
+
+constexpr int WINDOWWIDTH = 960, WINDOWHEIGHT = 540;
 
 int main(void) {
 	if (!glfwInit()) {
@@ -33,13 +27,12 @@ int main(void) {
 
 	GLFWwindow* window;
 
-	constexpr int windowWidth = 960, windowHeight = 540;
 	const char* glsl_version = "#version 130";
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	window = glfwCreateWindow(windowWidth, windowHeight, "Glfw learning with opengl <3", NULL, NULL);
+	window = glfwCreateWindow(WINDOWWIDTH, WINDOWHEIGHT, "Glfw learning with opengl <3", NULL, NULL);
 	if (!window) {
 #if DEBUG
 		fprintf(stderr, "%s:%i - Unable to create window\n", __FILE__, __LINE__);
@@ -68,6 +61,7 @@ int main(void) {
 	currentTest = testMenu; // Starts off with the menu
 
 	testMenu->RegisterTest<test::TestClearColor>("Clear Color");
+	testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
 
 	ImGui::CreateContext();
     ImGui::StyleColorsDark();
@@ -104,7 +98,8 @@ int main(void) {
 
 	if (currentTest == testMenu)
 		delete testMenu;
-	delete currentTest;
+	else
+		delete currentTest;
 
 	ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
