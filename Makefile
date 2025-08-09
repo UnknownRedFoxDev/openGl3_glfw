@@ -8,6 +8,7 @@ SRCS := $(shell find $(SRC_DIR) -name '*.cpp')
 OBJS := $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SRCS))
 
 LIBS := -lGL -lglfw -lGLEW
+INCLUDES := -Isrc -Isrc/vendor -Isrc/tests
 CXXFLAGS := -std=c++17 -Wall -Wextra -O0 -g
 
 all: $(BUILD_DIR)/$(OUTPUT)
@@ -19,7 +20,7 @@ $(BUILD_DIR)/$(OUTPUT): $(OBJS) | $(BUILD_DIR)
 # Compile each cpp file
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | $(BUILD_DIR)
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
 # Create build directory (not needed for subdirs, see above mkdir -p)
 $(BUILD_DIR):

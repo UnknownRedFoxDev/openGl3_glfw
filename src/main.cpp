@@ -2,32 +2,31 @@
 #include <GLFW/glfw3.h>
 
 #include <alloca.h>
-#include <iostream>
 
 #include "Renderer.h"
 
-#include "tests/Test.h"
-#include "tests/TestTexture2D.h"
+#include "Test.h"
+#include "TestTexture2D.h"
 
-#include "vendor/ImGui/imgui.h"
-#include "vendor/ImGui/imgui_impl_glfw.h"
-#include "vendor/ImGui/imgui_impl_opengl3.h"
+#include "ImGui/imgui.h"
+#include "ImGui/imgui_impl_glfw.h"
+#include "ImGui/imgui_impl_opengl3.h"
 
-#include "tests/TestClearColor.h"
+#include "TestClearColor.h"
 
 constexpr int WINDOWWIDTH = 960, WINDOWHEIGHT = 540;
 
 int main(void) {
 	if (!glfwInit()) {
 #if DEBUG
-		fprintf(stderr, "%s:%i - Unable to initialise glfw\n", __FILE__, __LINE__);
+		std::cerr << __FILE__ << ":" << __LINE__ <<  " - Unable to initialise glfw" << std::endl;
 #endif
 		return -1;
 	}
 
 	GLFWwindow* window;
 
-	const char* glsl_version = "#version 130";
+	const char* glsl_version = "#version 330";
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -35,7 +34,7 @@ int main(void) {
 	window = glfwCreateWindow(WINDOWWIDTH, WINDOWHEIGHT, "Glfw learning with opengl <3", NULL, NULL);
 	if (!window) {
 #if DEBUG
-		fprintf(stderr, "%s:%i - Unable to create window\n", __FILE__, __LINE__);
+		std::cerr << __FILE__ << ":" << __LINE__ <<  " - Unable to create window" << std::endl;
 #endif
 		glfwTerminate();
 		return -2;
@@ -46,7 +45,7 @@ int main(void) {
 
 	if (glewInit() != GLEW_OK) {
 #if DEBUG
-    fprintf(stderr, "%s:%i - Unable to initialize GLEW\n", __FILE__, __LINE__);
+		std::cerr << __FILE__ << ":" << __LINE__ <<  " - Unable to initialize GLEW" << std::endl;
 #endif
     return -3;
 	}
