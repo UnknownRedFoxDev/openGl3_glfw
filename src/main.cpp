@@ -13,6 +13,7 @@
 #include "ImGui/imgui_impl_opengl3.h"
 
 #include "TestClearColor.h"
+#include "TestSplitSpriteSheet.h"
 
 constexpr int WINDOWWIDTH = 960, WINDOWHEIGHT = 540;
 
@@ -61,6 +62,7 @@ int main(void) {
 
 	testMenu->RegisterTest<test::TestClearColor>("Clear Color");
 	testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
+	testMenu->RegisterTest<test::TestSplitSpriteSheet>("Sprite Sheet Split");
 
 	ImGui::CreateContext();
     ImGui::StyleColorsDark();

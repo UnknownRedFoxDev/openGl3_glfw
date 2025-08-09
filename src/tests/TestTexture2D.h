@@ -26,7 +26,7 @@ namespace test {
 			bool m_BlendingEnabled;
 			int m_windowWidth, m_windowHeight;
 			glm::mat4 m_ProjectionMatrix;
-			glm::vec3 m_CameraPos, m_ModelPos;
+			glm::vec3 m_CameraPos, m_ModelPos, m_Scale;
 			std::unique_ptr<VertexArray> m_VAO;
 			std::unique_ptr<VertexBuffer> m_VBO;
 			VertexBufferLayout m_Layout;

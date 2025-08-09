@@ -9,13 +9,13 @@ namespace test {
 	TestTexture2D::TestTexture2D()
 		: m_BlendingEnabled(true), m_windowWidth(960), m_windowHeight(540),
 		m_ProjectionMatrix(glm::ortho(0.0f, (float)(960),0.0f, (float)(540),-1.0f, 1.0f)),
-		m_CameraPos(0, 0, 0), m_ModelPos(0, 0, 0)
+		m_CameraPos(0, 0, 0), m_ModelPos(300, 200, 0), m_Scale(400.0f, 200.0f, 0.0f)
 	{
 		float vertices[] = {
-			-50.0f, -50.0f, 0.0f, 0.0f,
-			 50.0f, -50.0f, 1.0f, 0.0f,
-			 50.0f,  50.0f, 1.0f, 1.0f,
-			-50.0f,  50.0f, 0.0f, 1.0f,
+			-0.5f, -0.5f, 0.0f, 0.0f,
+			 0.5f, -0.5f, 1.0f, 0.0f,
+			 0.5f,  0.5f, 1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f, 1.0f,
 		};
 
 		uint indices[] = {
@@ -47,6 +47,7 @@ namespace test {
 			// -x, x, -y, y, -z, z
 			glm::mat4 view = glm::translate(glm::mat4(1.0f), m_CameraPos);
 			glm::mat4 model = glm::translate(glm::mat4(1.0f), m_ModelPos);
+			model = glm::scale(model, m_Scale);
 			glm::mat4 mvp = m_ProjectionMatrix * view * model;
 			m_Shader->Bind();
 			m_Shader->SetUniformMat4f("u_MVP", mvp);
@@ -63,5 +64,6 @@ namespace test {
 		}
 		ImGui::DragFloat2("Camera position", &m_CameraPos.x, 1.0f, 0.0f, (float)(m_windowWidth), "%.2f");
 		ImGui::DragFloat2("Model position", &m_ModelPos.x, 1.0f, 0.0f, (float)(m_windowWidth), "%.2f");
+		ImGui::DragFloat2("Model Scale", &m_Scale.x, 0.1f, 0.0f, (float)(m_windowWidth), "%.2f");
 	}
 }
