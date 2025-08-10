@@ -1,11 +1,11 @@
-#include "TestSplitSpriteSheet.h"
-#include "../Renderer.h"
-#include "../vendor/ImGui/imgui.h"
-#include "Texture.h"
-// #include "../vendor/ImGui/misc/cpp/imgui_stdlib.h"
 #include <iostream>
 #include <algorithm>
 #include <sstream>
+
+#include "TestSplitSpriteSheet.h"
+#include "Renderer.h"
+#include "ImGui/imgui.h"
+#include "Texture.h"
 
 #define SUB_SPRITE_WIDTH 32
 #define SUB_SPRITE_HEIGHT 47
@@ -22,9 +22,9 @@ std::pair<int,int> ParseKey(const std::string& key) {
 namespace test {
 
 	TestSplitSpriteSheet::TestSplitSpriteSheet()
-		: m_BlendingEnabled(true), m_windowWidth(960), m_windowHeight(540),
+		: m_TextureScale(1.2f), m_BlendingEnabled(true), m_windowWidth(960), m_windowHeight(540),
 		m_ProjectionMatrix(glm::ortho(0.0f, (float)(960),0.0f, (float)(540),-1.0f, 1.0f)),
-		m_CameraPos(0, 0, 0), m_ModelPos(300, 200, 0), m_Scale(150.0f, 200.0f, 0.0f)
+		m_ModelPos(480.0f, 156.0f, 0.0f), m_Scale(100.0f, 147.0f, 0.0f)
 	{
 		float vertices[] = {
 			-0.5f, -0.5f, 0.0f, 0.0f,
@@ -60,15 +60,12 @@ namespace test {
 
 		{
 			// -x, x, -y, y, -z, z
-			glm::mat4 view = glm::translate(glm::mat4(1.0f), m_CameraPos);
 			glm::mat4 model = glm::translate(glm::mat4(1.0f), m_ModelPos);
-			model = glm::scale(model, m_Scale);
-			glm::mat4 mvp = m_ProjectionMatrix * view * model;
+			model = glm::scale(model, m_Scale * m_TextureScale);
+			glm::mat4 mvp = m_ProjectionMatrix * model;
 			m_Shader->Bind();
 			m_Shader->SetUniformMat4f("u_MVP", mvp);
 			LoadTextureFromCache(keys.at(currentSpriteIndex));
-			// m_Shader->Bind();
-			// m_Shader->SetUniform1i("uTexture", 0);
 			renderer.Draw(*m_VAO, *m_EBO, *m_Shader);
 		}
 	}
@@ -80,10 +77,9 @@ namespace test {
 		} else {
 			GLCall(glDisable(GL_BLEND));
 		}
-		ImGui::DragFloat2("Camera position", &m_CameraPos.x, 1.0f, 0.0f, (float)(m_windowWidth), "%.2f");
 		ImGui::DragFloat2("Model position", &m_ModelPos.x, 1.0f, 0.0f, (float)(m_windowWidth), "%.2f");
-		ImGui::DragFloat2("Model Scale", &m_Scale.x, 0.1f, 0.0f, (float)(m_windowWidth), "%.2f");
 		ImGui::SliderInt("Card", &currentSpriteIndex, 0, keys.size() - 1);
+		ImGui::DragFloat("Texture Scale", &m_TextureScale, 0.1f, 0.0f, 20.0f, "%.1f");
 	}
 
 	void TestSplitSpriteSheet::LoadCache(const std::string& filepath, int spriteWidth, int spriteHeight) {

@@ -15,7 +15,7 @@
 #include "TestClearColor.h"
 #include "TestSplitSpriteSheet.h"
 
-constexpr int WINDOWWIDTH = 960, WINDOWHEIGHT = 540;
+constexpr int WINDOWWIDTH = 1920, WINDOWHEIGHT = 1080;
 
 int main(void) {
 	if (!glfwInit()) {
