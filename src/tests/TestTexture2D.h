@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Test.h"
-#include "../VertexArray.h"
-#include "../IndexBuffer.h"
-#include "../VertexBufferLayout.h"
-#include "../Shader.h"
-#include "../Texture.h"
-#include "../vendor/glm/glm.hpp"
-#include "../vendor/glm/gtc/matrix_transform.hpp"
+#include "VertexArray.h"
+#include "IndexBuffer.h"
+#include "VertexBufferLayout.h"
+#include "Shader.h"
+#include "Texture.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 #include <memory>
 
 namespace test {

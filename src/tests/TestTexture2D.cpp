@@ -1,8 +1,9 @@
-#include "TestTexture2D.h"
-#include "../Renderer.h"
-#include "../vendor/ImGui/imgui.h"
-// #include "../vendor/ImGui/misc/cpp/imgui_stdlib.h"
 #include <memory>
+
+#include "ImGui/imgui.h"
+
+#include "TestTexture2D.h"
+#include "Renderer.h"
 
 namespace test {
 

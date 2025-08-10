@@ -14,6 +14,7 @@
 
 #include "TestClearColor.h"
 #include "TestSplitSpriteSheet.h"
+#include "TestRefactoring.h"
 
 constexpr int WINDOWWIDTH = 1920, WINDOWHEIGHT = 1080;
 
@@ -63,6 +64,7 @@ int main(void) {
 	testMenu->RegisterTest<test::TestClearColor>("Clear Color");
 	testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
 	testMenu->RegisterTest<test::TestSplitSpriteSheet>("Sprite Sheet Split");
+	testMenu->RegisterTest<test::TestRefactoring>("Refactoring");
 
 	ImGui::CreateContext();
     ImGui::StyleColorsDark();
@@ -78,7 +80,7 @@ int main(void) {
 		ImGui::NewFrame();
 
 		if (currentTest) {
-			currentTest->OnUpdate(0.0f);
+			currentTest->OnUpdate();
 			currentTest->OnRender();
 
 			ImGui::Begin("Test");

@@ -1,6 +1,6 @@
 #include "TestClearColor.h"
-#include "../Renderer.h"
-#include "../vendor/ImGui/imgui.h"
+#include "Renderer.h"
+#include "ImGui/imgui.h"
 
 namespace test {
 
@@ -11,7 +11,7 @@ namespace test {
 		GLCall(glClear(GL_COLOR_BUFFER_BIT));
 	}
 
-	void TestClearColor::OnUpdate(float deltaTime) {
+	void TestClearColor::OnUpdate() {
 		GLCall(glClearColor(mClearColor[0],mClearColor[1],mClearColor[2],mClearColor[3]));
 		GLCall(glClear(GL_COLOR_BUFFER_BIT));
 	}

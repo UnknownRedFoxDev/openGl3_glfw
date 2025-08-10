@@ -82,6 +82,15 @@ namespace test {
 		ImGui::DragFloat("Texture Scale", &m_TextureScale, 0.1f, 0.0f, 20.0f, "%.1f");
 	}
 
+	std::pair<int,int> TestSplitSpriteSheet::ParseKey(const std::string& key) {
+		std::istringstream ss(key);
+		std::string part1, part2;
+		if (std::getline(ss, part1, ':') && std::getline(ss, part2)) {
+			return {std::stoi(part1), std::stoi(part2)};
+		}
+		return {0,0}; // fallback if parsing fails
+	}
+
 	void TestSplitSpriteSheet::LoadCache(const std::string& filepath, int spriteWidth, int spriteHeight) {
 		stbi_set_flip_vertically_on_load(1);
 		int sheetWidth;
@@ -125,7 +134,7 @@ namespace test {
 		for (auto pair : m_Cache) {
 			keys.push_back(pair.first);
 		}
-		std::sort(keys.begin(), keys.end(), [](const std::string& a, const std::string& b) {
+		std::sort(keys.begin(), keys.end(), [this](const std::string& a, const std::string& b) {
 				auto [color1, value1] = ParseKey(a);
 				auto [color2, value2] = ParseKey(b);
 				if (color1 == color2) { return value1 < value2; }

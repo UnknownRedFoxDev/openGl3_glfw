@@ -31,6 +31,7 @@ namespace test {
 
 			void LoadCache(const std::string& filepath, int spriteWidth, int spriteHeight);
 			void LoadTextureFromCache(const std::string& key);
+			std::pair<int,int> ParseKey(const std::string& key);
 
 			inline bool IsBlendingEnabled() { return m_BlendingEnabled; }
 			inline void SetBlending(bool blendingEnabled) { this->m_BlendingEnabled = blendingEnabled; }
