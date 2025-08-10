@@ -22,6 +22,7 @@ namespace test {
 
 	class TestSplitSpriteSheet : public Test {
 		public:
+			int currentSpriteIndex;
 			TestSplitSpriteSheet();
 
 			void OnRender() override;
@@ -35,6 +36,7 @@ namespace test {
 
 		private:
 			bool m_BlendingEnabled;
+			std::vector<std::string> keys;
 			int m_windowWidth, m_windowHeight;
 			glm::mat4 m_ProjectionMatrix;
 			glm::vec3 m_CameraPos, m_ModelPos, m_Scale;
