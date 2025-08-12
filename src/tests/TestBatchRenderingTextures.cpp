@@ -17,13 +17,14 @@
 namespace test {
 
 	TestBatchRenderingTextures::TestBatchRenderingTextures()
-		: m_TextureScale(1.2f), m_windowWidth(960), m_windowHeight(540),
+		: m_TextureScale(1.2f), m_CardTexIndex1(0), m_CardTexIndex2(0), m_windowWidth(960), m_windowHeight(540),
 		m_ProjectionMatrix(glm::ortho(0.0f, (float)(960),0.0f, (float)(540),-1.0f, 1.0f)),
 		m_ModelPos(480.0f, 156.0f, 0.0f), m_Scale(100.0f, 147.0f, 0.0f)
 	{
 		utils = std::make_unique<BackendTest>("res/shaders/shader.vert", "res/shaders/shader.frag", "res/textures/test.png");
 		LoadCache("res/textures/test.png", SUB_SPRITE_WIDTH, SUB_SPRITE_HEIGHT);
-		m_CardTex = std::make_shared<Texture>("res/textures/test.png");
+		m_CardTex1 = std::make_shared<Texture>("res/textures/test.png");
+		m_CardTex2 = std::make_shared<Texture>("res/textures/test.png");
 	}
 
 	void TestBatchRenderingTextures::OnRender()
@@ -32,7 +33,8 @@ namespace test {
 			glm::mat4 model = glm::translate(glm::mat4(1.0f), m_ModelPos);
 			model = glm::scale(model, m_Scale * m_TextureScale);
 			glm::mat4 mvp = m_ProjectionMatrix * model;
-			LoadTextureFromCache(keys.at(currentSpriteIndex), m_CardTex);
+			LoadTextureFromCache(keys.at(m_CardTexIndex1), m_CardTex1);
+			// LoadTextureFromCache(keys.at(m_CardTexIndex2), m_CardTex2);
 			utils->Render(mvp);
 
 		}
@@ -40,7 +42,8 @@ namespace test {
 
 	void TestBatchRenderingTextures::OnImGuiRender() {
 		ImGui::DragFloat2("Model position", &m_ModelPos.x, 1.0f, 0.0f, (float)(m_windowWidth), "%.2f");
-		ImGui::SliderInt("Card", &currentSpriteIndex, 0, 55);
+		ImGui::SliderInt("Card 1", &m_CardTexIndex1, 0, 55);
+		ImGui::SliderInt("Card 2", &m_CardTexIndex2, 0, 55);
 		ImGui::DragFloat("Texture Scale", &m_TextureScale, 0.1f, 0.0f, 20.0f, "%.1f");
 	}
 
@@ -63,7 +66,8 @@ namespace test {
 				int sprite_x = col * spriteWidth;
 				int sprite_y = row * spriteHeight;
 
-				for (int y = 0; y < spriteHeight; ++y) {
+				// going from down to up, it will try to reach to uncharted memory when at the top row of the spritesheet
+				for (int y = 0; y < spriteHeight-1; ++y) {
 					byte* startPtr = rawData + ((y + sprite_y) * sheetWidth + sprite_x) * bpp;
 					auto dstEnd = data.begin() + y * spriteWidth * bpp;
 
@@ -113,10 +117,10 @@ namespace test {
 		: m_BlendingEnabled(true)
 	{
 		std::vector<float> vertices{
-			-0.5f, -0.5f, 0.0f, 0.0f,
-			 0.5f, -0.5f, 1.0f, 0.0f,
-			 0.5f,  0.5f, 1.0f, 1.0f,
-			-0.5f,  0.5f, 0.0f, 1.0f,
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+			 0.5f,  0.5f, 1.0f, 1.0f, 0.0f,
+			-0.5f,  0.5f, 0.0f, 1.0f, 0.0f
 		};
 
 		std::vector<unsigned int> indices{
@@ -126,6 +130,7 @@ namespace test {
 
 		m_Layout.Push<float>(2);
 		m_Layout.Push<float>(2);
+		m_Layout.Push<float>(1);
 
 		m_Shader = std::make_shared<Shader>(vertPath, fragPath);
 		m_ObjInfo = std::make_unique<Geometry>(vertices, indices, m_Layout, m_Shader);

@@ -61,9 +61,10 @@ namespace test {
 
 	class TestBatchRenderingTextures : public Test {
 		public:
-			int currentSpriteIndex;
 			float m_TextureScale;
-			std::shared_ptr<Texture> m_CardTex;
+			int m_CardTexIndex1, m_CardTexIndex2;
+			std::shared_ptr<Texture> m_CardTex1;
+			std::shared_ptr<Texture> m_CardTex2;
 			TestBatchRenderingTextures();
 
 			void OnRender() override;
