@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "Test.h"
+#include "ImageManipulation.h"
 #include "VertexArray.h"
 #include "IndexBuffer.h"
 #include "VertexBufferLayout.h"
@@ -17,7 +18,7 @@
 typedef unsigned char byte;
 
 namespace test {
-	class BackendTest {
+	class BackendTest2 {
 		public:
 			struct Geometry {
 				public:
@@ -41,7 +42,7 @@ namespace test {
 
 		public:
 
-			BackendTest(const std::string& vertPath, const std::string& fragPath, const std::string defaultTexPath);
+			BackendTest2(const std::string& vertPath, const std::string& fragPath, const std::string defaultTexPath);
 			void Render(glm::mat4 mvp);
 			inline bool IsBlendingEnabled() { return m_BlendingEnabled; }
 			inline void SetBlending(bool blendingEnabled) { this->m_BlendingEnabled = blendingEnabled; }
@@ -59,28 +60,23 @@ namespace test {
 			std::unique_ptr<Geometry> m_ObjInfo;
 	};
 
-	class TestBatchRenderingTextures : public Test {
+	class TestRefactoring2 : public Test {
 		public:
 			float m_TextureScale;
 			int m_CardTexIndex1, m_CardTexIndex2;
 			std::shared_ptr<Texture> m_CardTex1;
 			std::shared_ptr<Texture> m_CardTex2;
-			TestBatchRenderingTextures();
+			TestRefactoring2();
 
 			void OnRender() override;
 			void OnImGuiRender() override;
-
-			void LoadCache(const std::string& filepath, int spriteWidth, int spriteHeight);
-			void LoadTextureFromCache(const std::string& key, std::shared_ptr<Texture> tex, unsigned int slot = 0);
-			std::pair<int,int> ParseKey(const std::string& key);
 		private:
-			std::vector<std::string> keys;
-			std::shared_ptr<Texture> m_Texture;
-			std::unordered_map<std::string, std::shared_ptr<Texture>> m_Cache;
+			std::unique_ptr<ImageManipulation> m_Cache;
 			int m_windowWidth, m_windowHeight;
 			glm::mat4 m_ProjectionMatrix;
 			glm::vec3 m_Model1Pos, m_Model2Pos, m_Scale;
-			std::unique_ptr<BackendTest> utils;
+			std::unique_ptr<BackendTest2> utils;
 	};
 
 }
+

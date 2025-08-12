@@ -20,7 +20,7 @@ namespace test {
 	TestBatchRenderingTextures::TestBatchRenderingTextures()
 		: m_TextureScale(1.6f), m_CardTexIndex1(0), m_CardTexIndex2(0), m_windowWidth(1920), m_windowHeight(1080),
 		m_ProjectionMatrix(glm::ortho(0.0f, (float)(1920),0.0f, (float)(1080),-1.0f, 1.0f)),
-		m_ModelPos(480.0f, 156.0f, 0.0f), m_Scale(100.0f, 147.0f, 0.0f)
+		m_Model1Pos(480.0f, 156.0f, 0.0f), m_Model2Pos(480.0f, 256.0f, 0.0f), m_Scale(100.0f, 147.0f, 0.0f)
 	{
 		utils = std::make_unique<BackendTest>("res/shaders/shader.vert", "res/shaders/shader.frag", "res/textures/test.png");
 		LoadCache("res/textures/test.png", SUB_SPRITE_WIDTH, SUB_SPRITE_HEIGHT);
@@ -31,21 +31,27 @@ namespace test {
 	void TestBatchRenderingTextures::OnRender()
 	{
 		{
-			glm::mat4 model = glm::translate(glm::mat4(1.0f), m_ModelPos);
+			glm::mat4 model = glm::translate(glm::mat4(1.0f), m_Model1Pos);
 			model = glm::scale(model, m_Scale * m_TextureScale);
 			glm::mat4 mvp = m_ProjectionMatrix * model;
-			LoadTextureFromCache(keys.at(m_CardTexIndex1), m_CardTex1, 0);
-			LoadTextureFromCache(keys.at(m_CardTexIndex2), m_CardTex2, 1);
+			LoadTextureFromCache(keys.at(m_CardTexIndex1), m_CardTex1);
 			utils->Render(mvp);
-
+		}
+		{
+			glm::mat4 model = glm::translate(glm::mat4(1.0f), m_Model2Pos);
+			model = glm::scale(model, m_Scale * m_TextureScale);
+			glm::mat4 mvp = m_ProjectionMatrix * model;
+			LoadTextureFromCache(keys.at(m_CardTexIndex2), m_CardTex2);
+			utils->Render(mvp);
 		}
 	}
 
 	void TestBatchRenderingTextures::OnImGuiRender() {
-		ImGui::DragFloat2("Model position", &m_ModelPos.x, 1.0f, 0.0f, (float)(m_windowWidth), "%.2f");
-		ImGui::SliderInt("Card 1", &m_CardTexIndex1, 0, 55);
-		ImGui::SliderInt("Card 2", &m_CardTexIndex2, 0, 55);
 		ImGui::DragFloat("Texture Scale", &m_TextureScale, 0.1f, 0.0f, 20.0f, "%.1f");
+		ImGui::SliderInt("Card 1", &m_CardTexIndex1, 0, 55);
+		ImGui::DragFloat2("Model 1 position", &m_Model1Pos.x, 1.0f, 0.0f, (float)(m_windowWidth), "%.2f");
+		ImGui::SliderInt("Card 2", &m_CardTexIndex2, 0, 55);
+		ImGui::DragFloat2("Model 2 position", &m_Model2Pos.x, 1.0f, 0.0f, (float)(m_windowWidth), "%.2f");
 	}
 
 	void TestBatchRenderingTextures::LoadCache(const std::string& filepath, int spriteWidth, int spriteHeight) {
@@ -118,33 +124,27 @@ namespace test {
 		: m_BlendingEnabled(true)
 	{
 		std::vector<float> vertices{
-			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-			 0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-			 0.5f,  0.5f, 1.0f, 1.0f, 0.0f,
-			-0.5f,  0.5f, 0.0f, 1.0f, 0.0f,
-
-			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
-			 0.5f,  0.5f, 1.0f, 0.0f, 1.0f,
-			 0.5f,  1.5f, 1.0f, 1.0f, 1.0f,
-			-0.5f,  1.5f, 0.0f, 1.0f, 1.0f
+			-0.5f, -0.5f, 0.0f, 0.0f,
+			 0.5f, -0.5f, 1.0f, 0.0f,
+			 0.5f,  0.5f, 1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f, 1.0f,
 		};
 
 		std::vector<unsigned int> indices{
 			0, 1, 2, 2, 3, 0,
-			4, 5, 6, 6, 7, 4
 		};
 
 		m_Layout.Push<float>(2);
 		m_Layout.Push<float>(2);
-		m_Layout.Push<float>(1);
 
 		m_Shader = std::make_shared<Shader>(vertPath, fragPath);
 		m_ObjInfo = std::make_unique<Geometry>(vertices, indices, m_Layout, m_Shader);
 
-		m_Shader->Bind();
-		int samplers[2] = { 0, 1 };
-		m_Shader->SetUniform1iv("uTextures", 2, samplers);
+		// int samplers[2] = { 0, 1 };
+		// m_Shader->SetUniform1iv("uTextures", 2, samplers);
 		m_Texture = std::make_shared<Texture>(defaultTexPath);
+		m_Shader->Bind();
+		m_Shader->SetUniform1i("uTexture", 0);
 	}
 
 	void BackendTest::Render(glm::mat4 mvp)

@@ -7,6 +7,7 @@
 
 #include "Test.h"
 #include "TestBatchRenderingTextures.h"
+#include "TestRefactoring2.h"
 #include "TestTexture2D.h"
 
 #include "ImGui/imgui.h"
@@ -67,6 +68,7 @@ int main(void) {
 	testMenu->RegisterTest<test::TestSplitSpriteSheet>("Sprite Sheet Split");
 	testMenu->RegisterTest<test::TestRefactoring>("Refactoring");
 	testMenu->RegisterTest<test::TestBatchRenderingTextures>("Batch Rendering Textures");
+	testMenu->RegisterTest<test::TestRefactoring2>("Refactoring the secondth");
 
 	ImGui::CreateContext();
     ImGui::StyleColorsDark();

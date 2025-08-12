@@ -58,13 +58,14 @@ void ImageManipulation::LoadTextures(const std::string& filepath) {
 			return color1 < color2;
 			});
 }
-void ImageManipulation::LoadTextureFromCache(const std::string& key, std::shared_ptr<Texture> tex) {
+void ImageManipulation::LoadTextureFromCache(const std::string& key, std::shared_ptr<Texture> tex, unsigned int slot) {
 	auto it = m_Cache.find(key);
 	if (it != m_Cache.end()){
-		tex = it->second;
+		tex = (it->second);
 	} else {
 		std::cerr << __FILE__ << ":" << __LINE__ << " - Failed to find sprite: " << key << std::endl;
 	}
+	tex->Bind(slot);
 }
 
 std::pair<int,int> ImageManipulation::ParseKey(const std::string& key) {
