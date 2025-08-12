@@ -8,32 +8,30 @@
 
 namespace test {
 
-	class Test {
-		public:
-			Test() {}
-			virtual ~Test() {}
+    class Test {
+        public:
+            Test() {}
+            virtual ~Test() {}
 
-			virtual void OnUpdate() {}
-			virtual void OnRender() {}
-			virtual void OnImGuiRender() {}
-	};
+            virtual void OnUpdate() {}
+            virtual void OnRender() {}
+            virtual void OnImGuiRender() {}
+    };
 
-	class TestMenu : public Test {
-		public:
-			TestMenu(Test*& currentTestPointer);
+    class TestMenu : public Test {
+        public:
+            TestMenu(Test*& currentTestPointer);
 
-			void OnImGuiRender() override;
+            void OnImGuiRender() override;
 
-			template<typename T>
-			void RegisterTest(const std::string& name) {
-				std::cout << "registering test: " << name << std::endl;
-				m_Tests.push_back(std::make_pair(
-					name,
-					std::function<Test*()>([](){ return new T(); })
-				));
-			}
-		private:
-			Test*& m_CurrentTest;
-			std::vector<std::pair<std::string, std::function<Test*()>>> m_Tests;
-	};
+            template<typename T>
+                void RegisterTest(const std::string& name) {
+                    std::cout << "registering test: " << name << std::endl;
+                    m_Tests.push_back(std::make_pair(name,
+                                                     std::function<Test*()>([](){ return new T(); })));
+                }
+        private:
+            Test*& m_CurrentTest;
+            std::vector<std::pair<std::string, std::function<Test*()>>> m_Tests;
+    };
 }

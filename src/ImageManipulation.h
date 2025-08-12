@@ -9,17 +9,17 @@
 #include "stb_image/stb_image.h"
 
 class ImageManipulation {
-	public:
-		int currentSpriteIndex;
-		float m_TextureScale;
-		std::vector<std::string> keys;
-		ImageManipulation(int sub_sprite_width, int sub_sprite_height);
+    public:
+        int currentSpriteIndex;
+        float m_TextureScale;
+        std::vector<std::string> keys;
+        ImageManipulation(int sub_sprite_width, int sub_sprite_height);
 
-		void LoadTextures(const std::string& filepath);
-		void LoadTextureFromCache(const std::string& key, std::shared_ptr<Texture> tex, unsigned int slot = 0);
-		std::pair<int,int> ParseKey(const std::string& key);
-	private:
-		std::unordered_map<std::string, std::shared_ptr<Texture>> m_Cache;
-		int spriteWidth, spriteHeight;
+        void LoadTextures(const std::string& filepath);
+        void LoadTextureFromCache(const std::string& key, std::shared_ptr<Texture> tex, unsigned int slot = 0);
+        std::pair<int,int> ParseKey(const std::string& key);
+    private:
+        std::unordered_map<std::string, std::shared_ptr<Texture>> m_Cache;
+        int spriteWidth, spriteHeight;
 };
 

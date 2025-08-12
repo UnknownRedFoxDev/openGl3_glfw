@@ -20,36 +20,36 @@ typedef unsigned char byte;
 
 namespace test {
 
-	class TestSplitSpriteSheet : public Test {
-		public:
-			int currentSpriteIndex;
-			float m_TextureScale;
-			TestSplitSpriteSheet();
+    class TestSplitSpriteSheet : public Test {
+        public:
+            int currentSpriteIndex;
+            float m_TextureScale;
+            TestSplitSpriteSheet();
 
-			void OnRender() override;
-			void OnImGuiRender() override;
+            void OnRender() override;
+            void OnImGuiRender() override;
 
-			void LoadCache(const std::string& filepath, int spriteWidth, int spriteHeight);
-			void LoadTextureFromCache(const std::string& key);
-			std::pair<int,int> ParseKey(const std::string& key);
+            void LoadCache(const std::string& filepath, int spriteWidth, int spriteHeight);
+            void LoadTextureFromCache(const std::string& key);
+            std::pair<int,int> ParseKey(const std::string& key);
 
-			inline bool IsBlendingEnabled() { return m_BlendingEnabled; }
-			inline void SetBlending(bool blendingEnabled) { this->m_BlendingEnabled = blendingEnabled; }
+            inline bool IsBlendingEnabled() { return m_BlendingEnabled; }
+            inline void SetBlending(bool blendingEnabled) { this->m_BlendingEnabled = blendingEnabled; }
 
-		private:
-			bool m_BlendingEnabled;
-			std::vector<std::string> keys;
-			int m_windowWidth, m_windowHeight;
-			glm::mat4 m_ProjectionMatrix;
-			glm::vec3 m_ModelPos, m_Scale;
-			std::unique_ptr<VertexArray> m_VAO;
-			std::unique_ptr<VertexBuffer> m_VBO;
-			VertexBufferLayout m_Layout;
-			std::unique_ptr<IndexBuffer> m_EBO;
-			std::unique_ptr<Shader> m_Shader;
-			std::shared_ptr<Texture> m_Texture;
-			std::unordered_map<std::string, std::shared_ptr<Texture>> m_Cache;
-	};
+        private:
+            bool m_BlendingEnabled;
+            std::vector<std::string> keys;
+            int m_windowWidth, m_windowHeight;
+            glm::mat4 m_ProjectionMatrix;
+            glm::vec3 m_ModelPos, m_Scale;
+            std::unique_ptr<VertexArray> m_VAO;
+            std::unique_ptr<VertexBuffer> m_VBO;
+            VertexBufferLayout m_Layout;
+            std::unique_ptr<IndexBuffer> m_EBO;
+            std::unique_ptr<Shader> m_Shader;
+            std::shared_ptr<Texture> m_Texture;
+            std::unordered_map<std::string, std::shared_ptr<Texture>> m_Cache;
+    };
 
 }
 
