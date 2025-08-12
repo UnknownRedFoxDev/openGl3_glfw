@@ -18,8 +18,8 @@
 namespace test {
 
 	TestBatchRenderingTextures::TestBatchRenderingTextures()
-		: m_TextureScale(1.2f), m_CardTexIndex1(0), m_CardTexIndex2(0), m_windowWidth(960), m_windowHeight(540),
-		m_ProjectionMatrix(glm::ortho(0.0f, (float)(960),0.0f, (float)(540),-1.0f, 1.0f)),
+		: m_TextureScale(1.6f), m_CardTexIndex1(0), m_CardTexIndex2(0), m_windowWidth(1920), m_windowHeight(1080),
+		m_ProjectionMatrix(glm::ortho(0.0f, (float)(1920),0.0f, (float)(1080),-1.0f, 1.0f)),
 		m_ModelPos(480.0f, 156.0f, 0.0f), m_Scale(100.0f, 147.0f, 0.0f)
 	{
 		utils = std::make_unique<BackendTest>("res/shaders/shader.vert", "res/shaders/shader.frag", "res/textures/test.png");
@@ -121,11 +121,17 @@ namespace test {
 			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
 			 0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
 			 0.5f,  0.5f, 1.0f, 1.0f, 0.0f,
-			-0.5f,  0.5f, 0.0f, 1.0f, 0.0f
+			-0.5f,  0.5f, 0.0f, 1.0f, 0.0f,
+
+			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
+			 0.5f,  0.5f, 1.0f, 0.0f, 1.0f,
+			 0.5f,  1.5f, 1.0f, 1.0f, 1.0f,
+			-0.5f,  1.5f, 0.0f, 1.0f, 1.0f
 		};
 
 		std::vector<unsigned int> indices{
-			0, 1, 2, 2, 3, 0
+			0, 1, 2, 2, 3, 0,
+			4, 5, 6, 6, 7, 4
 		};
 
 		m_Layout.Push<float>(2);
