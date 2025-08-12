@@ -12,7 +12,7 @@ ImageManipulation::ImageManipulation(int sub_sprite_width, int sub_sprite_height
 {
 }
 
-void ImageManipulation::LoadCache(const std::string& filepath) {
+void ImageManipulation::LoadTextures(const std::string& filepath) {
 	stbi_set_flip_vertically_on_load(1);
 	int sheetWidth;
 	int sheetHeight;
