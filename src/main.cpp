@@ -29,7 +29,7 @@ int main(void) {
 
 	GLFWwindow* window;
 
-	const char* glsl_version = "#version 330";
+	const char* glsl_version = "#version 450";
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
