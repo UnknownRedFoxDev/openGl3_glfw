@@ -71,7 +71,7 @@ namespace test {
 			void OnImGuiRender() override;
 
 			void LoadCache(const std::string& filepath, int spriteWidth, int spriteHeight);
-			void LoadTextureFromCache(const std::string& key, std::shared_ptr<Texture> tex);
+			void LoadTextureFromCache(const std::string& key, std::shared_ptr<Texture> tex, unsigned int slot = 0);
 			std::pair<int,int> ParseKey(const std::string& key);
 		private:
 			std::vector<std::string> keys;

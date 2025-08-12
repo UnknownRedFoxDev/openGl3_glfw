@@ -6,6 +6,7 @@
 #include "TestBatchRenderingTextures.h"
 #include "Renderer.h"
 #include "ImGui/imgui.h"
+#include "VertexBufferLayout.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "Texture.h"
@@ -33,8 +34,8 @@ namespace test {
 			glm::mat4 model = glm::translate(glm::mat4(1.0f), m_ModelPos);
 			model = glm::scale(model, m_Scale * m_TextureScale);
 			glm::mat4 mvp = m_ProjectionMatrix * model;
-			LoadTextureFromCache(keys.at(m_CardTexIndex1), m_CardTex1);
-			// LoadTextureFromCache(keys.at(m_CardTexIndex2), m_CardTex2);
+			LoadTextureFromCache(keys.at(m_CardTexIndex1), m_CardTex1, 0);
+			LoadTextureFromCache(keys.at(m_CardTexIndex2), m_CardTex2, 1);
 			utils->Render(mvp);
 
 		}
@@ -94,14 +95,14 @@ namespace test {
 				return color1 < color2;
 		});
 	}
-	void TestBatchRenderingTextures::LoadTextureFromCache(const std::string& key, std::shared_ptr<Texture> tex) {
+	void TestBatchRenderingTextures::LoadTextureFromCache(const std::string& key, std::shared_ptr<Texture> tex, unsigned int slot) {
 		auto it = m_Cache.find(key);
 		if (it != m_Cache.end()){
 			tex = (it->second);
 		} else {
 			std::cerr << __FILE__ << ":" << __LINE__ << " - Failed to find sprite: " << key << std::endl;
 		}
-		tex->Bind();
+		tex->Bind(slot);
 	}
 
 	std::pair<int,int> TestBatchRenderingTextures::ParseKey(const std::string& key) {
@@ -124,8 +125,7 @@ namespace test {
 		};
 
 		std::vector<unsigned int> indices{
-			0, 1, 2,
-			2, 3, 0
+			0, 1, 2, 2, 3, 0
 		};
 
 		m_Layout.Push<float>(2);
@@ -135,6 +135,9 @@ namespace test {
 		m_Shader = std::make_shared<Shader>(vertPath, fragPath);
 		m_ObjInfo = std::make_unique<Geometry>(vertices, indices, m_Layout, m_Shader);
 
+		m_Shader->Bind();
+		int samplers[2] = { 0, 1 };
+		m_Shader->SetUniform1iv("uTextures", 2, samplers);
 		m_Texture = std::make_shared<Texture>(defaultTexPath);
 	}
 
