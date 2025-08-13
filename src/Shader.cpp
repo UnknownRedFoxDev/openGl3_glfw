@@ -11,8 +11,8 @@ std::string Shader::loadFile(std::string const& filepath) {
     return ss.str();
 }
 
-uint Shader::CompileShader(uint type, const std::string& source) {
-    GLCall(uint shaderID = glCreateShader(type));
+unsigned int Shader::CompileShader(unsigned int type, const std::string& source) {
+    GLCall(unsigned int shaderID = glCreateShader(type));
     size_t length = source.length();
     if (!length) {
         fprintf(stderr, "%s:%d - Path provided is empty or out of scope\n", __FILE__, __LINE__);
@@ -41,10 +41,10 @@ uint Shader::CompileShader(uint type, const std::string& source) {
     return shaderID;
 }
 
-uint Shader::CreateProgram(const std::string& vertShaderPath, const std::string& fragShaderPath) {
-    GLCall(uint programID = glCreateProgram());
-    uint vs = CompileShader(GL_VERTEX_SHADER, loadFile(vertShaderPath));
-    uint fs = CompileShader(GL_FRAGMENT_SHADER, loadFile(fragShaderPath));
+unsigned int Shader::CreateProgram(const std::string& vertShaderPath, const std::string& fragShaderPath) {
+    GLCall(unsigned int programID = glCreateProgram());
+    unsigned int vs = CompileShader(GL_VERTEX_SHADER, loadFile(vertShaderPath));
+    unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, loadFile(fragShaderPath));
     GLCall(glAttachShader(programID, vs)); // Merge vertex shader with the program
     GLCall(glAttachShader(programID, fs)); // Merge fragment shader with the program
     GLCall(glLinkProgram(programID)); // Links the program to the GPU for usage. -> will replace any default program !

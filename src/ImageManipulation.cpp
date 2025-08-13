@@ -22,23 +22,23 @@ void ImageManipulation::LoadTextures(const std::string& filepath) {
     int spritesPerRow = sheetHeight / spriteHeight;
     int spritesPerCol = sheetWidth / spriteWidth;
 
-    // 4
-    for (int row = 0; row <= spritesPerRow; ++row) {
-        // 13
+    for (int row = 0; row < spritesPerRow; row++) {
         for (int col = 0; col < spritesPerCol; ++col) {
-            std::vector<unsigned char> data(spriteWidth * spriteHeight * bpp);
+            std::vector<unsigned char> data(spriteWidth * spriteHeight * 4);
 
             int sprite_x = col * spriteWidth;
             int sprite_y = row * spriteHeight;
 
-            for (int y = 0; y < spriteHeight; ++y) {
-                unsigned char* startPtr = rawData + ((y + sprite_y) * sheetWidth + sprite_x) * bpp;
-                auto dstEnd = data.begin() + y * spriteWidth * bpp;
+            for (int y = 0; y < spriteHeight-1; ++y) {
+                unsigned char* startPtr = rawData + ((y + sprite_y) * sheetWidth + sprite_x) * 4;
 
-                std::copy(startPtr, startPtr + spriteWidth * bpp, dstEnd);
+                std::copy(startPtr,
+                          startPtr + spriteWidth * 4,
+                          data.begin() + y * spriteWidth * 4
+                );
             }
             std::string key = std::to_string(row) + ":" + std::to_string(col);
-            m_Cache.emplace(key, std::make_shared<Texture>(std::move(data).data(), spriteWidth, spriteHeight, bpp));
+            m_Cache.emplace(key, std::make_shared<Texture>(std::move(data).data(), spriteWidth, spriteHeight, 4));
         }
     }
     if (rawData) {
@@ -56,7 +56,7 @@ void ImageManipulation::LoadTextures(const std::string& filepath) {
             auto [color2, value2] = ParseKey(b);
             if (color1 == color2) { return value1 < value2; }
             return color1 < color2;
-            });
+    });
 }
 void ImageManipulation::LoadTextureFromCache(const std::string& key, std::shared_ptr<Texture> tex, unsigned int slot) {
     auto it = m_Cache.find(key);

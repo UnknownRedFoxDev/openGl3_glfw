@@ -10,7 +10,7 @@ out vec2 vTexCoords;
 uniform mat4 u_MVP; //u_ModelViewProjectionMatrix
 
 void main() {
-	gl_Position = u_MVP * a_Position;
-	vTexCoords = a_TexCoords;
-	// vTexIndex = a_TexIndex;
+    gl_Position = u_MVP * a_Position;
+    vTexCoords = a_TexCoords;
+    // vTexIndex = a_TexIndex;
 }

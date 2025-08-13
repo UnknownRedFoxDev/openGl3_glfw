@@ -19,7 +19,7 @@ Texture::Texture(const std::string& path) : m_Renderer(0), m_Width(0), m_Height(
     BindToRenderer();
 
     if (m_DataBuffer) {
-        GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_DataBuffer));
+        GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_DataBuffer));
         GLCall(glBindTexture(GL_TEXTURE_2D, 0));
         stbi_image_free(m_DataBuffer);
     } else {
@@ -38,7 +38,7 @@ Texture::Texture(std::vector<unsigned char> data, int width, int height, int cha
     BindToRenderer();
 
     if (m_DataBuffer) {
-        GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_DataBuffer));
+        GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_DataBuffer));
         GLCall(glBindTexture(GL_TEXTURE_2D, 0));
     }
 }
@@ -51,7 +51,7 @@ Texture::Texture(unsigned char* data, int width, int height, int channels) {
     BindToRenderer();
 
     if (m_DataBuffer) {
-        GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_DataBuffer));
+        GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_DataBuffer));
         GLCall(glBindTexture(GL_TEXTURE_2D, 0));
     }
 }

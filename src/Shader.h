@@ -14,8 +14,8 @@ class Shader {
 
         int GetUniformLocation(const std::string& name);
         std::string loadFile(std::string const& filepath);
-        uint CompileShader(uint type, const std::string& source);
-        uint CreateProgram(const std::string& vertShaderPath, const std::string& fragShaderPath);
+        unsigned int CompileShader(unsigned int type, const std::string& source);
+        unsigned int CreateProgram(const std::string& vertShaderPath, const std::string& fragShaderPath);
 
     public:
         Shader(const std::string& vertShaderPath, const std::string& fragShaderPath);
