@@ -18,6 +18,9 @@ class ImageManipulation {
         void LoadTextures(const std::string& filepath);
         void LoadTextureFromCache(const std::string& key, std::shared_ptr<Texture> tex, unsigned int slot = 0);
         std::pair<int,int> ParseKey(const std::string& key);
+
+        int GetTexIdAt(unsigned int index);
+
     private:
         std::unordered_map<std::string, std::shared_ptr<Texture>> m_Cache;
         int spriteWidth, spriteHeight;

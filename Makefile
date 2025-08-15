@@ -22,17 +22,7 @@ $(BUILD_DIR):
 run: all
 	./$(BUILD_DIR)/$(OUTPUT)
 
-windows: BUILD_DIR := build
-windows: CXX := x86_64-w64-mingw32-g++
-windows: OUTPUT := my_program.exe
-windows: CXXFLAGS += -static-libgcc -static-libstdc++ -D_WIN32
-windows: LIBS := -lglew32 -lopengl32 -lglfw3 -lgdi32 -lshell32 -luser32 -mwindows
-windows: $(BUILD_DIR)/$(OUTPUT)
-
-$(BUILD_DIR)/$(OUTPUT): $(OBJS) | $(BUILD_DIR)
-	$(CXX) $(CXXFLAGS) $^ -o $@ $(LIBS)
-
 clean:
 	rm -rf $(BUILD_DIR)
 
-.PHONY: all run clean windows
+.PHONY: all run clean

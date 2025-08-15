@@ -23,4 +23,5 @@ class Texture {
         inline int GetWidth() const { return m_Width; }
         inline int GetHeight() const { return m_Height; }
         inline int GetBPP() const { return m_BitPerPixel; }
+        inline int GetTexID() const { return m_Renderer; }
 };

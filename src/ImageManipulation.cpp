@@ -77,3 +77,10 @@ std::pair<int,int> ImageManipulation::ParseKey(const std::string& key) {
     return {0,0}; // fallback if parsing fails
 }
 
+int ImageManipulation::GetTexIdAt(unsigned int index) {
+    auto it = m_Cache.find(keys.at(index));
+    if (it != m_Cache.end()){
+        return it->second->GetTexID();
+    }
+    return -1;
+}
