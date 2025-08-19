@@ -19,22 +19,7 @@ namespace test {
         m_ProjectionMatrix(glm::ortho(0.0f, (float)(1920),0.0f, (float)(1080),-1.0f, 1.0f)),
         m_Model1Pos(480.0f, 156.0f, 0.0f), m_Model2Pos(480.0f, 256.0f, 0.0f), m_Scale(100.0f, 147.0f, 0.0f)
     {
-        std::vector<float> vertices{
-            -0.5f, -0.5f, 0.0f, 0.0f,
-            0.5f, -0.5f, 1.0f, 0.0f,
-            0.5f,  0.5f, 1.0f, 1.0f,
-            -0.5f,  0.5f, 0.0f, 1.0f,
-        };
-
-        std::vector<unsigned int> indices{
-            0, 1, 2, 2, 3, 0,
-        };
-
-        VertexBufferLayout layout;
-        layout.Push<float>(2);
-        layout.Push<float>(2);
-
-        utils = std::make_unique<Backend>("res/shaders/shader.vert", "res/shaders/shader.frag", layout, vertices, indices);
+        utils = std::make_unique<Backend>("res/shaders/shader.vert", "res/shaders/shader.frag");
         m_Cache = std::make_unique<ImageManipulation>(SUB_SPRITE_WIDTH, SUB_SPRITE_HEIGHT);
         m_Cache->LoadTextures("res/textures/test.png");
         m_CardTex1 = std::make_shared<Texture>("res/textures/test.png");

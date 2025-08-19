@@ -2,11 +2,22 @@
 #include "Renderer.h"
 
 Backend::Backend(const std::string& vertPath,
-        const std::string& fragPath,
-        VertexBufferLayout layout,
-        std::vector<float> vertices,
-        std::vector<unsigned int> indices)
+        const std::string& fragPath)
 {
+    std::vector<float> vertices{
+        -0.5f, -0.5f, 0.0f, 0.0f,
+         0.5f, -0.5f, 1.0f, 0.0f,
+         0.5f,  0.5f, 1.0f, 1.0f,
+        -0.5f,  0.5f, 0.0f, 1.0f,
+    };
+
+    std::vector<unsigned int> indices{
+        0, 1, 2, 2, 3, 0,
+    };
+
+    VertexBufferLayout layout;
+    layout.Push<float>(2);
+    layout.Push<float>(2);
     m_Shader = std::make_shared<Shader>(vertPath, fragPath);
     m_EBO = std::make_unique<IndexBuffer>(indices.data(), indices.size());
     m_VBO = std::make_unique<VertexBuffer>(vertices.data(), vertices.size() * sizeof(float));

@@ -13,11 +13,7 @@
 class Backend {
     public:
         Backend(const std::string& vertPath,
-                const std::string& fragPath,
-                VertexBufferLayout layout,
-                std::vector<float> vertices,
-                std::vector<unsigned int> indices
-               );
+                const std::string& fragPath);
         void Render(glm::mat4 mvp);
 
     private:
