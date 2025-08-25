@@ -20,7 +20,7 @@ namespace test {
     TestBatchRenderingTextures::TestBatchRenderingTextures()
         : m_TextureScale(1.6f), m_CardTexIndex1(0), m_CardTexIndex2(0), m_windowWidth(1920), m_windowHeight(1080),
         m_ProjectionMatrix(glm::ortho(0.0f, (float)(1920),0.0f, (float)(1080),-1.0f, 1.0f)),
-        m_Model1Pos(480.0f, 156.0f, 0.0f), m_Model2Pos(480.0f, 256.0f, 0.0f), m_Scale(100.0f, 147.0f, 0.0f)
+        m_Model1Pos(600.0f, 628.0f, 0.0f), m_Model2Pos(600.0f, 256.0f, 0.0f), m_Scale(100.0f, 147.0f, 0.0f)
     {
         utils = std::make_unique<BackendTest1>("res/shaders/shader.vert", "res/shaders/shader.frag", "res/textures/test.png");
         LoadCache("res/textures/test.png", SUB_SPRITE_WIDTH, SUB_SPRITE_HEIGHT);

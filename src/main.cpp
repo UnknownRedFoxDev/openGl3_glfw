@@ -110,10 +110,11 @@ int main(void) {
 
         glfwSwapBuffers(window);
     }
-    if (currentTest == testMenu)
+    if (currentTest == testMenu) {
 		delete testMenu;
-	else
+    } else {
 		delete currentTest;
+    }
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();

@@ -1,11 +1,8 @@
-#include "ImGui/imgui.h"
-#include "iostream"
+#include "TestCardDecks.h"
 #include <algorithm>
 #include <unordered_map>
-#include <utility>
-#include "TestCardDecks.h"
-#include <random>    // for std::default_random_engine
-#include <chrono>    // for std::chrono::system_clock
+#include <random>
+#include <chrono>
 
 
 #define WINDOW_WIDTH 1920
@@ -19,40 +16,35 @@ namespace test {
         if (card.second)
             hand.push_back(card);
         else
-            std::cout << __FILE__ << ":" << __LINE__ << " - [WARNING]: card given was not valid. Card: (" \
-                << static_cast<int>(card.first) << ", "<< static_cast<int>(card.second) << ")"<< std::endl;
+            std::cout << "[WARNING]: card given was not valid. Card: ("
+                << static_cast<int>(card.first) << ", "<< static_cast<int>(card.second) << ") - "
+                << __FILE__ << ":" << __LINE__ <<  std::endl;
     }
     Card Deck::RemoveCard(Card card) {
-        if (hand.size()) {
-            if (!card.second) return std::make_pair(0, 0);
-            auto it = std::find(hand.begin(), hand.end(), card);
-            if (it != hand.end()) {
-                hand.erase(it);
-                return card;
-            }
+        auto it = std::find(hand.begin(), hand.end(), card);
+        if (it != hand.end()) {
+            printf("%d:%d\n", it->first, it->second);
+            return *it;
         }
-
-        std::cout << __FILE__ << ":" << __LINE__ << " - [WARNING]: could not find card in hand, probably because card was not valid. Card: (" \
-            << static_cast<int>(card.first) << ", "<< static_cast<int>(card.second) << ")"<< std::endl;
         return std::make_pair(0, 0);
     }
 
     Card Deck::RemoveCard(unsigned int index) {
+        Card toRemove;
         if (hand.size() && index < hand.size()) {
-            auto it = std::find(hand.begin(), hand.end(), hand.at(index));
-            if (it != hand.end()) {
-                Card removed = *it;
-                hand.erase(it);
-                return removed;
-            }
+            toRemove = hand.at(index);
+            return RemoveCard(toRemove);
         }
-        std::cout << __FILE__ << ":" << __LINE__ << " - [WARNING]: ";
-        if (index < hand.size())
-            std::cout << "index is greater than the deck's size" << std::endl;
+        std::cout << "[WARNING]: ";
+        if (index > hand.size())
+            std::cout << "index is greater than the deck's size - ";
         else if (!hand.size())
-            std::cout << "deck is empty" << std::endl;
+            std::cout << "deck is empty - ";
 
-        return std::make_pair(0, 0);
+        std::cout << __FILE__ << ":" << __LINE__ <<  std::endl;
+
+        return toRemove;
+        // return std::make_pair(0, 0);
     }
 
     Card Deck::GetCardAt(unsigned int index) {
@@ -149,6 +141,8 @@ namespace test {
             ImGui::Begin("Card 1 Menu", nullptr, ImGuiWindowFlags_HorizontalScrollbar);
             for (size_t i = 0; i < main.hand.size(); ++i) {
                 if (ImGui::ImageButton(main.imGuiIDs[i].second.c_str(), main.imGuiIDs[i].first, size, uv0_flipped, uv1_flipped)) {
+                    Card tempCard = main.hand.at(i);
+                    printf("Card Selected = %d:%d\n", tempCard.first, tempCard.second);
                     cardTexIndex1 = main.GetCardIndex(i, cardMap);
                 }
                 ImGui::SameLine();
@@ -156,7 +150,8 @@ namespace test {
             ImGui::End();
         }
         if (ImGui::Button("Remove Card")) {
-            main.RemoveCard(0);
+            Card removed = main.RemoveCard(0);
+            printf("%d:%d\n", removed.first, removed.second);
         }
     }
 }
