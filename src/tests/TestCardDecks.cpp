@@ -1,9 +1,9 @@
 #include "TestCardDecks.h"
+#include "ImGui/imgui.h"
 #include <algorithm>
 #include <unordered_map>
 #include <random>
 #include <chrono>
-
 
 #define WINDOW_WIDTH 1920
 #define WINDOW_HEIGHT 1080
@@ -11,8 +11,26 @@
 #define SUB_SPRITE_HEIGHT 94
 
 namespace test {
-    inline bool isCardValid(Card card) { return card.second; }
-    void Deck::AddCard(Card card) {
+    void displayDeck(const std::string& name, const Deck* deck, int* cardTexIndex, const std::unordered_map<unsigned int, Card>& cardMap, float textureScale) {
+        ImGui::SetNextWindowSize(ImVec2(635, 225));
+        ImGui::Begin(name.c_str(), nullptr, ImGuiWindowFlags_HorizontalScrollbar);
+        ImVec2 size = ImVec2(50*textureScale, 74*textureScale);
+        ImVec2 UV0 = ImVec2(0.0f, 1.0f);  // upper-left
+        ImVec2 UV1 = ImVec2(1.0f, 0.0f);  // lower-right
+        for (size_t i = 0; i < deck->hand.size(); ++i) {
+            if (ImGui::ImageButton(deck->imGuiIDs[i].second.c_str(), deck->imGuiIDs[i].first, size, UV0, UV1)) {
+                Card tempCard = deck->hand.at(i);
+                printf("Card Selected = %d:%d\n", tempCard.first, tempCard.second);
+                *cardTexIndex = deck->GetCardIndex(i, cardMap);
+            }
+            ImGui::SameLine();
+        }
+        ImGui::End();
+    }
+
+    bool isCardValid(Card card) { return card.second; }
+
+    void Deck::AddCard(const Card& card) {
         if (card.second)
             hand.push_back(card);
         else
@@ -20,38 +38,34 @@ namespace test {
                 << static_cast<int>(card.first) << ", "<< static_cast<int>(card.second) << ") - "
                 << __FILE__ << ":" << __LINE__ <<  std::endl;
     }
-    Card Deck::RemoveCard(Card card) {
+
+    Card Deck::RemoveCard(const Card& card) {
         auto it = std::find(hand.begin(), hand.end(), card);
-        if (it != hand.end()) {
-            printf("%d:%d\n", it->first, it->second);
-            return *it;
+        if (it == hand.end()) {
+            std::cout << "[WARNING]: card given was not found. Card: ("
+                << static_cast<int>(card.first) << ", "<< static_cast<int>(card.second) << ") - "
+                << __FILE__ << ":" << __LINE__ <<  std::endl;
+            return std::make_pair(0, 0);
         }
-        return std::make_pair(0, 0);
+        Card removed = *it;
+        hand.erase(it);
+        return removed;
     }
+
 
     Card Deck::RemoveCard(unsigned int index) {
-        Card toRemove;
-        if (hand.size() && index < hand.size()) {
-            toRemove = hand.at(index);
-            return RemoveCard(toRemove);
+        if (index >= hand.size()) {
+            std::cout << "[WARNING]: Index given is invalid or hand is empty. Index: "
+                << index << ", hand.size() = " << hand.size() << " - "
+                << __FILE__ << ":" << __LINE__ <<  std::endl;
+            return std::make_pair(0, 0);
         }
-        std::cout << "[WARNING]: ";
-        if (index > hand.size())
-            std::cout << "index is greater than the deck's size - ";
-        else if (!hand.size())
-            std::cout << "deck is empty - ";
-
-        std::cout << __FILE__ << ":" << __LINE__ <<  std::endl;
-
-        return toRemove;
-        // return std::make_pair(0, 0);
+        Card removed = hand[index];
+        hand.erase(hand.begin() + index);
+        return removed;
     }
 
-    Card Deck::GetCardAt(unsigned int index) {
-        return hand.at(index);
-    }
-
-    unsigned int Deck::GetCardIndex(unsigned int index, std::unordered_map<unsigned int, Card> cardMap) {
+    unsigned int Deck::GetCardIndex(unsigned int index, std::unordered_map<unsigned int, Card> cardMap) const {
         for (auto& card : cardMap) {
             if (card.second == hand.at(index)) {
                 return card.first;
@@ -60,7 +74,7 @@ namespace test {
         return 0;
     }
 
-    unsigned int Deck::GetCardIndex(Card obj, std::unordered_map<unsigned int, Card> cardMap) {
+    unsigned int Deck::GetCardIndex(const Card& obj, std::unordered_map<unsigned int, Card> cardMap) const {
         for (auto& card : cardMap) {
             if (card.second == obj) {
                 return card.first;
@@ -69,7 +83,7 @@ namespace test {
         return 0;
     }
 
-    void Deck::Update_GUI_Infos(std::unordered_map<unsigned int, Card> cardMap, ImageManipulation* textureCache) {
+    void Deck::Update_GUI_Infos(const std::unordered_map<unsigned int, Card>& cardMap, ImageManipulation* textureCache) {
         size_t sizeDeck = hand.size();
         imGuiIDs.clear();
         for (unsigned int i = 0; i < sizeDeck; ++i) {
@@ -82,7 +96,7 @@ namespace test {
 
     TestDecks::TestDecks()
         : projectionMatrix(glm::ortho(0.0f, (float)(WINDOW_WIDTH),0.0f, (float)(WINDOW_HEIGHT),-1.0f, 1.0f)),
-            model1Pos(900.0f, 750.0f, 0.0f),model2Pos(900.0f, 300.0f, 0.0f),cardTexScale(100.0f, 147.0f, 0.0f),io(ImGui::GetIO())
+            model1Pos(900.0f, 750.0f, 0.0f), model2Pos(900.0f, 300.0f, 0.0f),cardTexScale(100.0f, 147.0f, 0.0f),io(ImGui::GetIO())
     {
         (void)io;
         utils = std::make_unique<Backend>("res/shaders/shader.vert", "res/shaders/shader.frag");
@@ -99,59 +113,78 @@ namespace test {
                 cardMap.emplace(index++, std::make_pair(i, j));
             }
         }
-
-        for (int i = 0; i < 26; ++i) {
+        int i = 0;
+        for (; i < 26; ++i) {
             if (isCardValid(cardMap.at(i))) {
-                main.AddCard(cardMap.at(i));
+                first.AddCard(cardMap.at(i));
+            }
+        }
+        for (; i < 55; ++i) {
+            if (isCardValid(cardMap.at(i))) {
+                second.AddCard(cardMap.at(i));
             }
         }
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
         std::default_random_engine engine(seed);
-        std::shuffle(main.hand.begin(), main.hand.end(), engine);
-        main.Update_GUI_Infos(cardMap, textureCache.get());
-        lastSizeDeck = main.hand.size();
+        std::shuffle(first.hand.begin(), first.hand.end(), engine);
+        first.Update_GUI_Infos(cardMap, textureCache.get());
+        sizeCheckDeck1 = first.hand.size();
+
+        std::shuffle(second.hand.begin(), second.hand.end(), engine);
+        second.Update_GUI_Infos(cardMap, textureCache.get());
+        sizeCheckDeck2 = second.hand.size();
     }
 
 
     // TODO: Render Cards of the deck in an ImGui window
     void TestDecks::OnUpdate() {
-        lastSizeDeck = main.hand.size();
+        sizeCheckDeck1 = first.hand.size();
+        sizeCheckDeck2 = second.hand.size();
     }
 
     void TestDecks::OnRender() {
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), model1Pos);
-        model = glm::scale(model, cardTexScale * textureScale);
-        glm::mat4 mvp = projectionMatrix * model;
-        textureCache->LoadTextureFromCache(textureCache->keys.at(cardTexIndex1), cardTex1);
-        utils->Render(mvp);
+        {
+            glm::mat4 model = glm::translate(glm::mat4(1.0f), model1Pos);
+            model = glm::scale(model, cardTexScale * textureScale);
+            glm::mat4 mvp = projectionMatrix * model;
+            textureCache->LoadTextureFromCache(textureCache->keys.at(cardTexIndex1), cardTex1);
+            utils->Render(mvp);
+        }
+        {
+            glm::mat4 model = glm::translate(glm::mat4(1.0f), model2Pos);
+            model = glm::scale(model, cardTexScale * textureScale);
+            glm::mat4 mvp = projectionMatrix * model;
+            textureCache->LoadTextureFromCache(textureCache->keys.at(cardTexIndex2), cardTex2);
+            utils->Render(mvp);
+        }
     }
+
 
     void TestDecks::OnImGuiRender() {
         {
-            ImGui::Begin("Debug Menu");
-            ImGui::SliderFloat("Scale", &textureScale, 2.0f, 12.0f);
-            ImGui::SliderInt("Card 1", &cardTexIndex1, 0, textureCache->keys.size()-1);
-            ImGui::DragFloat2("Model 1 position", &model1Pos.x, 1.0f, 0.0f, (float)(WINDOW_WIDTH), "%.2f");
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+            ImGui::Begin("Debug Menu Card 1");
+            ImGui::SliderInt("Index", &cardTexIndex1, 0, textureCache->keys.size()-1);
+            ImGui::DragFloat2("Model position", &model1Pos.x, 1.0f, 0.0f, (float)(WINDOW_WIDTH), "%.2f");
             ImGui::End();
         }
         {
-            if (main.hand.size() != lastSizeDeck) main.Update_GUI_Infos(cardMap, textureCache.get());
-            ImGui::SetNextWindowSize(ImVec2(635, 225));
-            ImGui::Begin("Card 1 Menu", nullptr, ImGuiWindowFlags_HorizontalScrollbar);
-            for (size_t i = 0; i < main.hand.size(); ++i) {
-                if (ImGui::ImageButton(main.imGuiIDs[i].second.c_str(), main.imGuiIDs[i].first, size, uv0_flipped, uv1_flipped)) {
-                    Card tempCard = main.hand.at(i);
-                    printf("Card Selected = %d:%d\n", tempCard.first, tempCard.second);
-                    cardTexIndex1 = main.GetCardIndex(i, cardMap);
-                }
-                ImGui::SameLine();
-            }
+            ImGui::Begin("Debug Menu Card 2");
+            ImGui::SliderInt("Index", &cardTexIndex2, 0, textureCache->keys.size()-1);
+            ImGui::DragFloat2("Model position", &model2Pos.x, 1.0f, 0.0f, (float)(WINDOW_WIDTH), "%.2f");
             ImGui::End();
         }
-        if (ImGui::Button("Remove Card")) {
-            Card removed = main.RemoveCard(0);
-            printf("%d:%d\n", removed.first, removed.second);
+        if (first.hand.size() != sizeCheckDeck1) first.Update_GUI_Infos(cardMap, textureCache.get());
+        displayDeck("Card 1", &first, &cardTexIndex1, cardMap, textureScale);
+
+        if (second.hand.size() != sizeCheckDeck2) second.Update_GUI_Infos(cardMap, textureCache.get());
+        displayDeck("card 2", &second, &cardTexIndex2, cardMap, textureScale);
+
+        ImGui::SliderFloat("Scale", &textureScale, 2.0f, 12.0f);
+        if (ImGui::Button("Remove in first deck")) {
+            first.RemoveCard(static_cast<unsigned int>(index-1));
         }
+        ImGui::SameLine();
+        ImGui::DragInt("Card Index", &index, 1.0f, 1, 24);
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
     }
 }

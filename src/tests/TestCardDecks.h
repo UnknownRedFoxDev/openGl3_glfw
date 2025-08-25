@@ -1,15 +1,18 @@
 #pragma once
+
 #include "Test.h"
-#include <unordered_map>
-#include <utility>
-#include <vector>
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
 #include "Texture.h"
 #include "Pipeline.h"
 #include "ImageManipulation.h"
-#include <memory>
+
 #include "ImGui/imgui.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
+#include <memory>
+#include <unordered_map>
+#include <utility>
+#include <vector>
 
 typedef std::pair<unsigned char, unsigned char> Card;
 
@@ -19,13 +22,12 @@ namespace test {
             std::vector<Card> hand;
             std::vector<std::pair<ImTextureID, std::string>> imGuiIDs;
 
-            void AddCard(Card card);
+            void AddCard(const Card& card);
+            Card RemoveCard(const Card& card);
             Card RemoveCard(unsigned int index = 0);
-            Card RemoveCard(Card card);
-            Card GetCardAt(unsigned int index);
-            unsigned int GetCardIndex(unsigned int index, std::unordered_map<unsigned int, Card> cardMap);
-            unsigned int GetCardIndex(Card obj, std::unordered_map<unsigned int, Card> cardMap);
-            void Update_GUI_Infos(std::unordered_map<unsigned int, Card> cardMap,ImageManipulation* textureCache);
+            unsigned int GetCardIndex(unsigned int index, std::unordered_map<unsigned int, Card> cardMap) const;
+            unsigned int GetCardIndex(const Card& obj, std::unordered_map<unsigned int, Card> cardMap) const;
+            void Update_GUI_Infos(const std::unordered_map<unsigned int, Card>& cardMap,ImageManipulation* textureCache);
 
             Deck() {};
     };
@@ -37,8 +39,11 @@ namespace test {
             void OnRender() override;
             void OnImGuiRender() override;
         private:
-            Deck main;
-            size_t lastSizeDeck;
+            Deck first;
+            Deck second;
+            size_t sizeCheckDeck1;
+            size_t sizeCheckDeck2;
+            int index = 1;
 
             glm::mat4 projectionMatrix;
             glm::vec3 model1Pos, model2Pos, cardTexScale;
@@ -49,9 +54,6 @@ namespace test {
             int cardTexIndex1 = 0, cardTexIndex2 = 0;
             float textureScale = 2.2f;
             std::unordered_map<unsigned int, Card> cardMap;
-            ImVec2 size = ImVec2(50*textureScale, 74*textureScale);
-            ImVec2 uv0_flipped = ImVec2(0.0f, 1.0f);  // upper-left
-            ImVec2 uv1_flipped = ImVec2(1.0f, 0.0f);  // lower-right
             ImGuiIO& io;
     };
 }
