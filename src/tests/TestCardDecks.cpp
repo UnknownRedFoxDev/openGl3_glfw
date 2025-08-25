@@ -12,27 +12,36 @@
 
 namespace test {
     void displayDeck(const std::string& name, const Deck* deck, int* cardTexIndex, const std::unordered_map<unsigned int, Card>& cardMap, float textureScale) {
-        ImGui::SetNextWindowSize(ImVec2(635, 225));
-        ImGui::Begin(name.c_str(), nullptr, ImGuiWindowFlags_HorizontalScrollbar);
+        // Makes the background of the button the same color as the overall bg
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.086f, 0.086f, 0.086f, 1.0f));
+        ImGui::SetNextWindowSize(ImVec2(575*(textureScale/2), 163*(textureScale/2)));
+        ImGui::Begin(name.c_str(), nullptr, ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse);
         ImVec2 size = ImVec2(50*textureScale, 74*textureScale);
+
+        // UVs are to reverse the images' UVs because openGL reads them inverted
         ImVec2 UV0 = ImVec2(0.0f, 1.0f);  // upper-left
         ImVec2 UV1 = ImVec2(1.0f, 0.0f);  // lower-right
+
         for (size_t i = 0; i < deck->hand.size(); ++i) {
+            // ImGuiIDs first = Texture ID : second = Texture name/string_id (to differenciate between each button [required by ImGui])
             if (ImGui::ImageButton(deck->imGuiIDs[i].second.c_str(), deck->imGuiIDs[i].first, size, UV0, UV1)) {
-                Card tempCard = deck->hand.at(i);
-                printf("Card Selected = %d:%d\n", tempCard.first, tempCard.second);
+                // Card tempCard = deck->hand.at(i);
+                // printf("Card Selected = %d:%d\n", tempCard.first, tempCard.second);
                 *cardTexIndex = deck->GetCardIndex(i, cardMap);
             }
             ImGui::SameLine();
         }
         ImGui::End();
+        ImGui::PopStyleColor();
     }
 
     bool isCardValid(Card card) { return card.second; }
 
     void Deck::AddCard(const Card& card) {
         if (isCardValid(card)) hand.push_back(card);
-        else std::cout << "[WARNING]: card given was not valid. Card: (" << static_cast<int>(card.first) << ", "<< static_cast<int>(card.second) << ") - " << __FILE__ << ":" << __LINE__ <<  std::endl;
+        else std::cout << "[WARNING]: card given was not valid. Card: ("
+            << static_cast<int>(card.first) << ", "<< static_cast<int>(card.second) << ") - "
+            << __FILE__ << ":" << __LINE__ <<  std::endl;
     }
 
     Card Deck::RemoveCard(const Card& card) {
@@ -93,6 +102,16 @@ namespace test {
             model1Pos(900.0f, 750.0f, 0.0f), model2Pos(900.0f, 300.0f, 0.0f),cardTexScale(100.0f, 147.0f, 0.0f),io(ImGui::GetIO())
     {
         (void)io;
+        ImGuiStyle& style = ImGui::GetStyle();
+
+        // Modify style properties
+        style.FrameRounding = 0.0f;
+        style.FrameBorderSize = 0.0f;
+        style.WindowBorderSize = 0.0f;
+        style.Colors[ImGuiCol_Button] = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);        // Transparent button
+        style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);  // Slightly visible when hovered
+        style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
+
         utils = std::make_unique<Backend>("res/shaders/shader.vert", "res/shaders/shader.frag");
         textureCache = std::make_unique<ImageManipulation>(SUB_SPRITE_WIDTH, SUB_SPRITE_HEIGHT);
         textureCache->LoadTextures("res/textures/test3.png");
@@ -169,14 +188,19 @@ namespace test {
             ImGui::DragFloat2("Model position", &model2Pos.x, 1.0f, 0.0f, (float)(WINDOW_WIDTH), "%.2f");
             ImGui::End();
         }
-        displayDeck("Card 1", &first, &cardTexIndex1, cardMap, textureScale);
 
-        displayDeck("card 2", &second, &cardTexIndex2, cardMap, textureScale);
+        if (displayDeck1) displayDeck("Card 1", &first, &cardTexIndex1, cardMap, textureScale);
+        if (displayDeck2) displayDeck("card 2", &second, &cardTexIndex2, cardMap, textureScale);
 
-        ImGui::SliderFloat("Scale", &textureScale, 2.0f, 12.0f);
+        ImGui::Checkbox("Display Deck 1", &displayDeck1);
+        ImGui::Checkbox("Display Deck 2", &displayDeck2);
+        ImGui::SliderFloat("Scale", &textureScale, 2.0f, 2.35f);
         ImGui::SliderInt("Index", &index, 0, 24);
         if (ImGui::Button("Remove in first deck")) {
-            first.RemoveCard((size_t)index);
+            second.AddCard(first.RemoveCard((size_t)index));
+        }
+        if (ImGui::Button("Remove in second deck")) {
+            first.AddCard(second.RemoveCard((size_t)index));
         }
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
     }

@@ -41,7 +41,9 @@ namespace test {
             void OnImGuiRender() override;
         private:
             Deck first;
+            bool displayDeck1 = true;
             Deck second;
+            bool displayDeck2 = true;
             size_t sizeCheckDeck1;
             size_t sizeCheckDeck2;
             int index = 0;
