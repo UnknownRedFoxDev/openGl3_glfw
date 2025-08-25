@@ -9,6 +9,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
+#include <cstddef>
 #include <memory>
 #include <unordered_map>
 #include <utility>
@@ -24,7 +25,7 @@ namespace test {
 
             void AddCard(const Card& card);
             Card RemoveCard(const Card& card);
-            Card RemoveCard(unsigned int index = 0);
+            Card RemoveCard(size_t index = 0);
             unsigned int GetCardIndex(unsigned int index, std::unordered_map<unsigned int, Card> cardMap) const;
             unsigned int GetCardIndex(const Card& obj, std::unordered_map<unsigned int, Card> cardMap) const;
             void Update_GUI_Infos(const std::unordered_map<unsigned int, Card>& cardMap,ImageManipulation* textureCache);
@@ -43,7 +44,7 @@ namespace test {
             Deck second;
             size_t sizeCheckDeck1;
             size_t sizeCheckDeck2;
-            int index = 1;
+            int index = 0;
 
             glm::mat4 projectionMatrix;
             glm::vec3 model1Pos, model2Pos, cardTexScale;
