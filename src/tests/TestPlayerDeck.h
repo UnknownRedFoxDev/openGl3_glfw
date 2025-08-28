@@ -47,6 +47,7 @@ namespace test {
         private:
             int width, height;
             std::unique_ptr<Player> m_Player1;
+            std::unique_ptr<Player> m_Player2;
             std::unique_ptr<Backend> utils;
             std::unique_ptr<ImageManipulation> textureCache;
             std::shared_ptr<std::unordered_map<unsigned int, Card>> cardMap;

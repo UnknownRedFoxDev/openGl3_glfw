@@ -77,6 +77,7 @@ class Deck {
                          const std::unordered_map<unsigned int, Card>* cardMap,
                          float textureScale);
         void Update_GUI_Infos(const std::unordered_map<unsigned int, Card>* cardMap, const ImageManipulation* textureCache);
+        inline bool IsEmpty() { return hand.empty(); }
 
         Deck() {};
 };
