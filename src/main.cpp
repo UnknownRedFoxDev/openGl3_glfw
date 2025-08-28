@@ -7,14 +7,15 @@
 #include "ImGui/imgui_impl_glfw.h"
 #include "ImGui/imgui_impl_opengl3.h"
 
-#include "tests/TestClearColor.h"
-#include "tests/TestTexture2D.h"
-#include "tests/TestSplitSpriteSheet.h"
-#include "tests/TestRefactoring.h"
-#include "tests/TestRefactoring2.h"
-#include "tests/TestBatchRenderingTextures.h"
-#include "tests/TestCardDecks.h"
+#include "TestClearColor.h"
+#include "TestTexture2D.h"
+#include "TestSplitSpriteSheet.h"
+#include "TestRefactoring.h"
+#include "TestRefactoring2.h"
+#include "TestBatchRenderingTextures.h"
+#include "TestCardDecks.h"
 #include "TestCardObj.h"
+#include "TestPlayerDeck.h"
 
 constexpr int WINDOWWIDTH = 1200, WINDOWHEIGHT = 1080;
 
@@ -69,6 +70,7 @@ int main(void) {
 	testMenu->RegisterTest<test::TestRefactoring2>("2nd Refactoring");
 	testMenu->RegisterTest<test::TestDecks>("Decks");
 	testMenu->RegisterTest<test::TestCardObj>("Card object");
+	testMenu->RegisterTest<test::TestPlayerDeck>("Player Deck");
 
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
