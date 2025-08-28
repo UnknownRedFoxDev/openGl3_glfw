@@ -5,8 +5,6 @@
 #include "ImGui/imgui.h"
 #include "Texture.h"
 
-#define WINDOW_WIDTH 1920
-#define WINDOW_HEIGHT 1080
 #define SUB_SPRITE_WIDTH 64
 #define SUB_SPRITE_HEIGHT 94
 
@@ -49,8 +47,8 @@ namespace test {
                                                   ));
     }
 
-    TestCardObj::TestCardObj()
-        : m_windowWidth(1200), m_windowHeight(1080)
+    TestCardObj::TestCardObj(int width, int height)
+        : m_windowWidth(width), m_windowHeight(height)
     {
         utils = std::make_unique<Backend>("res/shaders/shader.vert", "res/shaders/shader.frag");
         m_Cache = std::make_unique<ImageManipulation>(SUB_SPRITE_WIDTH, SUB_SPRITE_HEIGHT);

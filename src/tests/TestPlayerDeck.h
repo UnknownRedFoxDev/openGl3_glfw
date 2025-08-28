@@ -16,11 +16,12 @@ namespace test {
 
     class TestPlayerDeck : public Test {
         public:
-            TestPlayerDeck();
+            TestPlayerDeck(int width, int height);
             void OnUpdate() override;
             void OnRender() override;
             void OnImGuiRender() override;
         private:
+            int width, height;
             std::unique_ptr<CardObj> card1;
             Deck first;
             bool displayDeck1 = true;

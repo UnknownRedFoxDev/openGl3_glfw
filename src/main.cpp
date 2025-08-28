@@ -17,7 +17,7 @@
 #include "TestCardObj.h"
 #include "TestPlayerDeck.h"
 
-constexpr int WINDOWWIDTH = 1200, WINDOWHEIGHT = 1080;
+constexpr int WINDOW_WIDTH = 1920, WINDOW_HEIGHT = 1080;
 
 int main(void) {
     if (!glfwInit()) {
@@ -34,7 +34,7 @@ int main(void) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    window = glfwCreateWindow(WINDOWWIDTH, WINDOWHEIGHT, "Glfw learning with opengl <3", NULL, NULL);
+    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Glfw learning with opengl <3", NULL, NULL);
     if (!window) {
 #if DEBUG
         std::cerr << __FILE__ << ":" << __LINE__ <<  " - Unable to create window" << std::endl;
@@ -69,8 +69,8 @@ int main(void) {
 	testMenu->RegisterTest<test::TestBatchRenderingTextures>("Batch Rendering Textures");
 	testMenu->RegisterTest<test::TestRefactoring2>("2nd Refactoring");
 	testMenu->RegisterTest<test::TestDecks>("Decks");
-	testMenu->RegisterTest<test::TestCardObj>("Card object");
-	testMenu->RegisterTest<test::TestPlayerDeck>("Player Deck");
+	testMenu->RegisterTest<test::TestCardObj>("Card object", WINDOW_WIDTH, WINDOW_HEIGHT);
+	testMenu->RegisterTest<test::TestPlayerDeck>("Player Deck", WINDOW_WIDTH, WINDOW_HEIGHT);
 
     ImGui::CreateContext();
     ImGui::StyleColorsDark();

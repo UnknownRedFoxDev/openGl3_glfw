@@ -4,11 +4,8 @@
 #include <random>
 #include <chrono>
 
-#define WINDOW_WIDTH 1200
-#define WINDOW_HEIGHT 1080
-
 namespace test {
-    TestPlayerDeck::TestPlayerDeck() : io(ImGui::GetIO()){
+    TestPlayerDeck::TestPlayerDeck(int width, int height) : width(width), height(height), io(ImGui::GetIO()){
         (void)io;
 
         utils = std::make_unique<Backend>("res/shaders/shader.vert", "res/shaders/shader.frag");
@@ -17,11 +14,11 @@ namespace test {
 
         // TODO 1: Get GameClasses.h to work
         // TODO 2: Create a Player class
-        float posX = WINDOW_WIDTH / 2.0f;
-        float pos1Y = WINDOW_HEIGHT / 1.5f + SUB_SPRITE_HEIGHT / 2.0f;
-        float pos2Y = WINDOW_HEIGHT / 3.0f - SUB_SPRITE_HEIGHT / 2.0f;
-        card1 = std::make_unique<CardObj>(WINDOW_WIDTH, WINDOW_HEIGHT, glm::vec2(posX, pos1Y), glm::vec2(CARD_SIZE_X, CARD_SIZE_Y));
-        card2 = std::make_unique<CardObj>(WINDOW_WIDTH, WINDOW_HEIGHT, glm::vec2(posX, pos2Y), glm::vec2(CARD_SIZE_X, CARD_SIZE_Y));
+        float posX = width / 2.0f;
+        float pos1Y = height / 1.5f + SUB_SPRITE_HEIGHT / 2.0f;
+        float pos2Y = height / 3.0f - SUB_SPRITE_HEIGHT / 2.0f;
+        card1 = std::make_unique<CardObj>(width, height, glm::vec2(posX, pos1Y), glm::vec2(CARD_SIZE_X, CARD_SIZE_Y));
+        card2 = std::make_unique<CardObj>(width, height, glm::vec2(posX, pos2Y), glm::vec2(CARD_SIZE_X, CARD_SIZE_Y));
 
 
         int index = 0;
@@ -76,14 +73,14 @@ namespace test {
             ImGui::Begin("Debug Menu Card 1");
             ImGui::DragFloat("Card 1 Scale", &card1->m_TextureScale, 0.1f, 0.0f, 20.0f, "%.1f");
             ImGui::SliderInt("Card 1 Index", &card1->m_TextureIndex, 0, 55);
-            ImGui::DragFloat2("Card 1 Pos", &card1->getPosition()->x, 1.0f, 0.0f, (float)(WINDOW_WIDTH), "%.2f");
+            ImGui::DragFloat2("Card 1 Pos", &card1->getPosition()->x, 1.0f, 0.0f, (float)(width), "%.2f");
             ImGui::End();
         }
         {
             ImGui::Begin("Debug Menu Card 2");
             ImGui::DragFloat("Card 2 Scale", &card2->m_TextureScale, 0.1f, 0.0f, 20.0f, "%.1f");
             ImGui::SliderInt("Card 2 Index", &card2->m_TextureIndex, 0, 55);
-            ImGui::DragFloat2("Card 2 Pos", &card2->getPosition()->x, 1.0f, 0.0f, (float)(WINDOW_WIDTH), "%.2f");
+            ImGui::DragFloat2("Card 2 Pos", &card2->getPosition()->x, 1.0f, 0.0f, (float)(width), "%.2f");
             ImGui::End();
         }
 

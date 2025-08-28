@@ -47,7 +47,7 @@ namespace test {
 
     class TestCardObj : public Test {
         public:
-            TestCardObj();
+            TestCardObj(int width, int height);
 
             void OnRender() override;
             void OnImGuiRender() override;
