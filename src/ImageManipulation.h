@@ -17,6 +17,7 @@ class ImageManipulation {
 
         void LoadTextures(const std::string& filepath);
         void LoadTextureFromCache(const std::string& key, std::shared_ptr<Texture> tex, unsigned int slot = 0);
+        std::shared_ptr<Texture> FetchTextureFromCache(unsigned int index);
         std::pair<int,int> ParseKey(const std::string& key);
 
         int GetTexIdAt(unsigned int index);

@@ -14,10 +14,9 @@
 #include "tests/TestRefactoring2.h"
 #include "tests/TestBatchRenderingTextures.h"
 #include "tests/TestCardDecks.h"
+#include "TestCardObj.h"
 
-constexpr int WINDOWWIDTH = 1920, WINDOWHEIGHT = 1080;
-#define SUB_SPRITE_WIDTH 64
-#define SUB_SPRITE_HEIGHT 94
+constexpr int WINDOWWIDTH = 1200, WINDOWHEIGHT = 1080;
 
 int main(void) {
     if (!glfwInit()) {
@@ -69,6 +68,7 @@ int main(void) {
 	testMenu->RegisterTest<test::TestBatchRenderingTextures>("Batch Rendering Textures");
 	testMenu->RegisterTest<test::TestRefactoring2>("2nd Refactoring");
 	testMenu->RegisterTest<test::TestDecks>("Decks");
+	testMenu->RegisterTest<test::TestCardObj>("Card object");
 
     ImGui::CreateContext();
     ImGui::StyleColorsDark();

@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <memory>
 #include <sstream>
+#include <stdexcept>
 
 #include "ImageManipulation.h"
 #include "Texture.h"
@@ -66,6 +67,15 @@ void ImageManipulation::LoadTextureFromCache(const std::string& key, std::shared
         std::cerr << __FILE__ << ":" << __LINE__ << " - Failed to find sprite: " << key << std::endl;
     }
     tex->Bind(slot);
+}
+std::shared_ptr<Texture> ImageManipulation::FetchTextureFromCache(unsigned int index) {
+    std::string key = keys.at(index);
+    auto it = m_Cache.find(key);
+    if (it == m_Cache.end()){
+        std::string error = static_cast<std::string>(__FILE__) + ":" + std::to_string(__LINE__) + "Failed to find sprite";
+        throw std::runtime_error(error.c_str());
+    }
+    return it->second;
 }
 
 std::pair<int,int> ImageManipulation::ParseKey(const std::string& key) {

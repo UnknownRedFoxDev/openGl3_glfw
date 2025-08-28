@@ -13,9 +13,20 @@
 namespace test {
     void displayDeck(const std::string& name, const Deck* deck, int* cardTexIndex, const std::unordered_map<unsigned int, Card>& cardMap, float textureScale) {
         // Makes the background of the button the same color as the overall bg
-        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.086f, 0.086f, 0.086f, 1.0f));
-        ImGui::SetNextWindowSize(ImVec2(575*(textureScale/2), 163*(textureScale/2)));
-        ImGui::Begin(name.c_str(), nullptr, ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse);
+        ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+        ImGui::PushStyleColor(ImGuiCol_WindowBg,      ImVec4(0.086f, 0.086f, 0.086f, 1.0f));
+        ImGui::PushStyleColor(ImGuiCol_Button,        ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive,  ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+        ImGui::SetNextWindowSize(ImVec2(575*(textureScale/2), 185*(textureScale/2)));
+        ImGuiInputFlags flags = ImGuiWindowFlags_NoResize               |
+                                ImGuiWindowFlags_NoTitleBar             |
+                                ImGuiWindowFlags_HorizontalScrollbar    |
+                                ImGuiWindowFlags_NoCollapse             ;
+
+        ImGui::Begin(name.c_str(), nullptr, flags);
         ImVec2 size = ImVec2(50*textureScale, 74*textureScale);
 
         // UVs are to reverse the images' UVs because openGL reads them inverted
@@ -32,6 +43,12 @@ namespace test {
             ImGui::SameLine();
         }
         ImGui::End();
+        ImGui::PopStyleVar();
+        ImGui::PopStyleVar();
+        ImGui::PopStyleVar();
+        ImGui::PopStyleColor();
+        ImGui::PopStyleColor();
+        ImGui::PopStyleColor();
         ImGui::PopStyleColor();
     }
 
@@ -102,15 +119,6 @@ namespace test {
             model1Pos(900.0f, 750.0f, 0.0f), model2Pos(900.0f, 300.0f, 0.0f),cardTexScale(100.0f, 147.0f, 0.0f),io(ImGui::GetIO())
     {
         (void)io;
-        ImGuiStyle& style = ImGui::GetStyle();
-
-        // Modify style properties
-        style.FrameRounding = 0.0f;
-        style.FrameBorderSize = 0.0f;
-        style.WindowBorderSize = 0.0f;
-        style.Colors[ImGuiCol_Button] = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);        // Transparent button
-        style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);  // Slightly visible when hovered
-        style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
 
         utils = std::make_unique<Backend>("res/shaders/shader.vert", "res/shaders/shader.frag");
         textureCache = std::make_unique<ImageManipulation>(SUB_SPRITE_WIDTH, SUB_SPRITE_HEIGHT);
@@ -148,8 +156,6 @@ namespace test {
         sizeCheckDeck2 = second.hand.size();
     }
 
-
-    // TODO: Render Cards of the deck in an ImGui window
     void TestDecks::OnUpdate() {
         if (first.hand.size() != sizeCheckDeck1) first.Update_GUI_Infos(cardMap, textureCache.get());
         sizeCheckDeck1 = first.hand.size();
