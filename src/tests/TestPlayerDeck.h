@@ -9,10 +9,34 @@
 #include "TestCardObj.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+#include "Renderer.h"
 
 #include <memory>
 
 namespace test {
+    class Player {
+        private:
+            std::unique_ptr<CardObj> m_CardQuad;
+            const std::unordered_map<unsigned int, Card>* cardMapReference;
+
+        public:
+            Deck playingDeck;
+            Deck waitingDeck;
+            bool displayPlayingDeck = true;
+            size_t playingDeckSize;
+#if DEBUG
+            bool displayWaitingDeck = true;
+            size_t waitingDeckSize;
+#endif //DEBUG
+
+        public:
+            Player(const std::unordered_map<unsigned int, Card>* cardMap, int width, int height);
+            void UpdateIconCache(const ImageManipulation* textureCache);
+            void CheckDeckSize(const ImageManipulation* textureCache);
+            inline size_t GetPlayingDeckSize() { return playingDeck.hand.size(); }
+            inline size_t GetWaitingDeckSize() { return playingDeck.hand.size(); }
+            inline CardObj* GetQuad() { return m_CardQuad.get(); }
+    };
 
     class TestPlayerDeck : public Test {
         public:
@@ -22,21 +46,10 @@ namespace test {
             void OnImGuiRender() override;
         private:
             int width, height;
-            std::unique_ptr<CardObj> card1;
-            Deck first;
-            bool displayDeck1 = true;
-            size_t sizeCheckDeck1;
-
-            std::unique_ptr<CardObj> card2;
-            Deck second;
-            bool displayDeck2 = true;
-            size_t sizeCheckDeck2;
-
-            int index = 0;
-
+            std::unique_ptr<Player> m_Player1;
             std::unique_ptr<Backend> utils;
             std::unique_ptr<ImageManipulation> textureCache;
-            std::unordered_map<unsigned int, Card> cardMap;
+            std::shared_ptr<std::unordered_map<unsigned int, Card>> cardMap;
             ImGuiIO& io;
     };
 }

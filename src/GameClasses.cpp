@@ -72,7 +72,7 @@ Card Deck::RemoveCard(size_t index) {
     return removed;
 }
 
-unsigned int Deck::GetCardIndex(unsigned int index, std::unordered_map<unsigned int, Card> cardMap) const {
+unsigned int Deck::GetCardIndex(unsigned int index, const std::unordered_map<unsigned int, Card> cardMap) const {
     for (auto& card : cardMap) {
         if (card.second == hand.at(index)) {
             return card.first;
@@ -81,7 +81,7 @@ unsigned int Deck::GetCardIndex(unsigned int index, std::unordered_map<unsigned 
     return 0;
 }
 
-unsigned int Deck::GetCardIndex(const Card& obj, std::unordered_map<unsigned int, Card> cardMap) const {
+unsigned int Deck::GetCardIndex(const Card& obj, const std::unordered_map<unsigned int, Card> cardMap) const {
     for (auto& card : cardMap) {
         if (card.second == obj) {
             return card.first;
@@ -92,7 +92,7 @@ unsigned int Deck::GetCardIndex(const Card& obj, std::unordered_map<unsigned int
 
 void Deck::displayDeck(const std::string& name,
                        int* cardTexIndex,
-                 const std::unordered_map<unsigned int, Card>& cardMap,
+                 const std::unordered_map<unsigned int, Card>* cardMap,
                        float textureScale)
 {
     // Makes the background of the button the same color as the overall bg
@@ -118,7 +118,7 @@ void Deck::displayDeck(const std::string& name,
         if (ImGui::ImageButton(imGuiIDs[i].second.c_str(), imGuiIDs[i].first, size, UV0, UV1)) {
             // Card tempCard = hand.at(i);
             // printf("Card Selected = %d:%d\n", tempCard.first, tempCard.second);
-            *cardTexIndex = GetCardIndex(i, cardMap);
+            *cardTexIndex = GetCardIndex(i, *cardMap);
         }
         ImGui::SameLine();
     }
@@ -132,11 +132,11 @@ void Deck::displayDeck(const std::string& name,
     ImGui::PopStyleColor();
 }
 
-void Deck::Update_GUI_Infos(const std::unordered_map<unsigned int, Card>& cardMap, ImageManipulation* textureCache) {
+void Deck::Update_GUI_Infos(const std::unordered_map<unsigned int, Card>* cardMap, const ImageManipulation* textureCache) {
     size_t sizeDeck = hand.size();
     imGuiIDs.clear();
     for (unsigned int i = 0; i < sizeDeck; ++i) {
-        int id = textureCache->GetTexIdAt(GetCardIndex(i, cardMap));
+        int id = textureCache->GetTexIdAt(GetCardIndex(i, *cardMap));
         ImTextureID texID = (ImTextureID)(intptr_t)id;
         std::string s = "imageButton" + std::to_string(i);
         imGuiIDs.push_back(std::make_pair(texID, s));

@@ -20,7 +20,7 @@ class ImageManipulation {
         std::shared_ptr<Texture> FetchTextureFromCache(unsigned int index);
         std::pair<int,int> ParseKey(const std::string& key);
 
-        int GetTexIdAt(unsigned int index);
+        int GetTexIdAt(unsigned int index) const;
 
     private:
         std::unordered_map<std::string, std::shared_ptr<Texture>> m_Cache;

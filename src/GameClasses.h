@@ -29,7 +29,7 @@
 #endif //Card
 
 
-inline bool isCardValid(Card card) { return card.second; }
+inline bool isCardValid(const Card card) { return card.second; }
 
 class CardObj {
     private:
@@ -70,13 +70,13 @@ class Deck {
         void AddCard(const Card& card);
         Card RemoveCard(const Card& card);
         Card RemoveCard(size_t index = 0);
-        unsigned int GetCardIndex(unsigned int index, std::unordered_map<unsigned int, Card> cardMap) const;
-        unsigned int GetCardIndex(const Card& obj, std::unordered_map<unsigned int, Card> cardMap) const;
+        unsigned int GetCardIndex(unsigned int index, const std::unordered_map<unsigned int, Card> cardMap) const;
+        unsigned int GetCardIndex(const Card& obj, const std::unordered_map<unsigned int, Card> cardMap) const;
         void displayDeck(const std::string& name,
                          int* cardTexIndex,
-                         const std::unordered_map<unsigned int, Card>& cardMap,
+                         const std::unordered_map<unsigned int, Card>* cardMap,
                          float textureScale);
-        void Update_GUI_Infos(const std::unordered_map<unsigned int, Card>& cardMap,ImageManipulation* textureCache);
+        void Update_GUI_Infos(const std::unordered_map<unsigned int, Card>* cardMap, const ImageManipulation* textureCache);
 
         Deck() {};
 };
