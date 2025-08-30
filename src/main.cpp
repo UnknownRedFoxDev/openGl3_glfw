@@ -17,9 +17,12 @@
 #include "TestCardObj.h"
 #include "TestPlayerDeck.h"
 
+#include "nob/nob.h"
+
 constexpr int WINDOW_WIDTH = 1920, WINDOW_HEIGHT = 1080;
 
 int main(void) {
+    // TODO("Use The Tracy Profiler (tracy) with the guide manual (in downloads)");
     if (!glfwInit()) {
 #if DEBUG
         std::cerr << __FILE__ << ":" << __LINE__ <<  " - Unable to initialise glfw" << std::endl;
@@ -77,8 +80,7 @@ int main(void) {
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-
-    GLCall(glClearColor(0.086f, 0.086f, 0.086f, 0.0f));
+    GLCall(glClearColor(0.094f, 0.094f, 0.094f, 0.0f));
 
     // Mainframe* drawPile = new Mainframe;
     // Player* first = new Player();

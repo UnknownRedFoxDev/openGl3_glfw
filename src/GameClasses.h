@@ -29,7 +29,6 @@
 #endif //Card
 
 
-inline bool isCardValid(const Card card) { return card.second; }
 
 class CardObj {
     private:
@@ -67,6 +66,8 @@ class Deck {
         std::vector<Card> hand;
         std::vector<std::pair<ImTextureID, std::string>> imGuiIDs;
 
+    public:
+        static bool IsCardValid(const Card card) { return card.second; }
         void AddCard(const Card& card);
         Card RemoveCard(const Card& card);
         Card RemoveCard(size_t index = 0);

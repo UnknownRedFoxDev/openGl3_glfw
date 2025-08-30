@@ -57,12 +57,12 @@ namespace test {
         }
         index = 0;
         for (; index < 28; ++index) {
-            if (isCardValid(cardMap->at(index))) {
+            if (Deck::IsCardValid(cardMap->at(index))) {
                 m_Player1->playingDeck.AddCard(cardMap->at(index));
             }
         }
         for (; index < 55; ++index) {
-            if (isCardValid(cardMap->at(index))) {
+            if (Deck::IsCardValid(cardMap->at(index))) {
                 m_Player2->playingDeck.AddCard(cardMap->at(index));
             }
         }

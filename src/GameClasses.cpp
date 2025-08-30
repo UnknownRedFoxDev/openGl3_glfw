@@ -42,7 +42,7 @@ void CardObj::setProjMat(float width, float height) {
 
 
 void Deck::AddCard(const Card& card) {
-    if (isCardValid(card)) hand.push_back(card);
+    if (IsCardValid(card)) hand.push_back(card);
     else std::cout << "[WARNING]: card given was not valid. Card: ("
         << static_cast<int>(card.first) << ", "<< static_cast<int>(card.second) << ") - "
             << __FILE__ << ":" << __LINE__ <<  std::endl;

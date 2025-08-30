@@ -7,7 +7,7 @@ namespace test {
     TestClearColor::TestClearColor() : mClearColor { 0.2f, 0.3f, 0.8f, 1.0f } {
     }
     TestClearColor::~TestClearColor() {
-        GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+        GLCall(glClearColor(0.094f, 0.094f, 0.094f, 0.0f));
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
     }
 
