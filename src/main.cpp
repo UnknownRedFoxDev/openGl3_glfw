@@ -63,19 +63,19 @@ int main(void) {
     Renderer renderer;
 
     test::Test* currentTest = nullptr;
-	test::TestMenu* testMenu = new test::TestMenu(currentTest);
-	currentTest = testMenu; // Starts off with the menu
+    test::TestMenu* testMenu = new test::TestMenu(currentTest);
+    currentTest = testMenu; // Starts off with the menu
 
-	testMenu->RegisterTest<test::TestClearColor>("Clear Color");
-	testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
-	testMenu->RegisterTest<test::TestSplitSpriteSheet>("Sprite Sheet Split");
-	testMenu->RegisterTest<test::TestRefactoring>("Refactoring");
-	testMenu->RegisterTest<test::TestBatchRenderingTextures>("Batch Rendering Textures");
-	testMenu->RegisterTest<test::TestRefactoring2>("2nd Refactoring");
-	testMenu->RegisterTest<test::TestDecks>("Decks");
-	testMenu->RegisterTest<test::TestCardObj>("Card object", WINDOW_WIDTH, WINDOW_HEIGHT);
-	testMenu->RegisterTest<test::TestPlayerDeck>("Player Deck", WINDOW_WIDTH, WINDOW_HEIGHT);
-	testMenu->RegisterTest<test::TestGameDeck>("Game Deck", WINDOW_WIDTH, WINDOW_HEIGHT);
+    testMenu->RegisterTest<test::TestClearColor>("Clear Color");
+    testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
+    testMenu->RegisterTest<test::TestSplitSpriteSheet>("Sprite Sheet Split");
+    testMenu->RegisterTest<test::TestRefactoring>("Refactoring");
+    testMenu->RegisterTest<test::TestBatchRenderingTextures>("Batch Rendering Textures");
+    testMenu->RegisterTest<test::TestRefactoring2>("2nd Refactoring");
+    testMenu->RegisterTest<test::TestDecks>("Decks");
+    testMenu->RegisterTest<test::TestCardObj>("Card object", WINDOW_WIDTH, WINDOW_HEIGHT);
+    testMenu->RegisterTest<test::TestPlayerDeck>("Player Deck", WINDOW_WIDTH, WINDOW_HEIGHT);
+    testMenu->RegisterTest<test::TestGameDeck>("Game Deck", WINDOW_WIDTH, WINDOW_HEIGHT);
 
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
@@ -98,17 +98,17 @@ int main(void) {
         ImGui::NewFrame();
 
         if (currentTest) {
-			currentTest->OnUpdate();
-			currentTest->OnRender();
+            currentTest->OnUpdate();
+            currentTest->OnRender();
 
-			ImGui::Begin("Test");
-			if (currentTest != testMenu && ImGui::Button("<--")) {
-				delete currentTest;
-				currentTest = testMenu;
-			}
-			currentTest->OnImGuiRender();
-			ImGui::End();
-		}
+            ImGui::Begin("Test");
+            if (currentTest != testMenu && ImGui::Button("<--")) {
+                delete currentTest;
+                currentTest = testMenu;
+            }
+            currentTest->OnImGuiRender();
+            ImGui::End();
+        }
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -116,9 +116,9 @@ int main(void) {
         glfwSwapBuffers(window);
     }
     if (currentTest == testMenu) {
-		delete testMenu;
+        delete testMenu;
     } else {
-		delete currentTest;
+        delete currentTest;
     }
 
     ImGui_ImplOpenGL3_Shutdown();
