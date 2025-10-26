@@ -142,3 +142,36 @@ void Deck::Update_GUI_Infos(const std::unordered_map<unsigned int, Card>* cardMa
         imGuiIDs.push_back(std::make_pair(texID, s));
     }
 }
+
+Player::Player(const std::unordered_map<unsigned int, Card>* cardMap, int width, int height) : cardMapReference(cardMap)
+{
+    m_CardQuad = std::make_unique<CardObj>(width, height, glm::vec2(0, 0), glm::vec2(CARD_SIZE_X, CARD_SIZE_Y));
+    playingDeckSize = playingDeck.hand.size();
+#if DEBUG
+    waitingDeckSize = waitingDeck.hand.size();
+#endif //DEBUG
+}
+
+void Player::UpdateIconCache(const ImageManipulation* textureCache) {
+    playingDeck.Update_GUI_Infos(cardMapReference, textureCache);
+    waitingDeck.Update_GUI_Infos(cardMapReference, textureCache);
+}
+
+void Player::CheckDeckSize(const ImageManipulation* textureCache) {
+    if (playingDeckSize <= 5) {
+        while (!waitingDeck.IsEmpty()) {
+            Card temp = waitingDeck.RemoveCard();
+            playingDeck.AddCard(temp);
+        }
+    }
+    if (GetPlayingDeckSize() != playingDeckSize) UpdateIconCache(textureCache);
+    playingDeckSize = GetPlayingDeckSize();
+#if DEBUG
+    if (GetWaitingDeckSize() != waitingDeckSize) UpdateIconCache(textureCache);
+    waitingDeckSize = GetWaitingDeckSize();
+#endif //DEBUG
+}
+
+void Player::TradeCard(Player& receiver, const Card& toTrade) {
+    receiver.waitingDeck.AddCard(waitingDeck.RemoveCard(toTrade));
+}

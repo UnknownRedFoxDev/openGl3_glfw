@@ -3,3 +3,5 @@ build
 compile_commands.json
 .cache/clangd/index
 imgui.ini
+nob.old
+nob

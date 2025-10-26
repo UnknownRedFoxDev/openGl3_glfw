@@ -1,5 +1,6 @@
 #include "TestPlayerDeck.h"
 #include "GameClasses.h"
+#include <algorithm>
 #include <memory>
 #include <random>
 #include <chrono>
@@ -68,7 +69,8 @@ namespace test {
         }
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
         std::default_random_engine engine(seed);
-        // std::shuffle(first.hand.begin(), first.hand.end(), engine);
+        std::shuffle(m_Player1->playingDeck.hand.begin(), m_Player1->playingDeck.hand.end(), engine);
+        std::shuffle(m_Player2->playingDeck.hand.begin(), m_Player2->playingDeck.hand.end(), engine);
         // m_Player1->CheckDeckSize(textureCache.get());
         // m_Player2->CheckDeckSize(textureCache.get());
     }

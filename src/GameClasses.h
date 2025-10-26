@@ -3,6 +3,7 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "ImageManipulation.h"
+#include "Renderer.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "ImGui/imgui.h"
@@ -82,3 +83,30 @@ class Deck {
 
         Deck() {};
 };
+
+
+class Player {
+    private:
+        std::unique_ptr<CardObj> m_CardQuad;
+        const std::unordered_map<unsigned int, Card>* cardMapReference;
+
+    public:
+        Deck playingDeck;
+        Deck waitingDeck;
+        bool displayPlayingDeck = true;
+        size_t playingDeckSize;
+#if DEBUG
+        bool displayWaitingDeck = true;
+        size_t waitingDeckSize;
+#endif //DEBUG
+
+    public:
+        Player(const std::unordered_map<unsigned int, Card>* cardMap, int width, int height);
+        void UpdateIconCache(const ImageManipulation* textureCache);
+        void CheckDeckSize(const ImageManipulation* textureCache);
+        inline size_t GetPlayingDeckSize() { return playingDeck.hand.size(); }
+        inline size_t GetWaitingDeckSize() { return playingDeck.hand.size(); }
+        inline CardObj* GetQuad() { return m_CardQuad.get(); }
+        void TradeCard(Player& receiver, const Card& toTrade);
+};
+

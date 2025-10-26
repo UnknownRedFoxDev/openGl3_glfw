@@ -16,6 +16,7 @@
 #include "TestCardDecks.h"
 #include "TestCardObj.h"
 #include "TestPlayerDeck.h"
+#include "TestGameDeck.h"
 
 #include "nob/nob.h"
 
@@ -74,6 +75,7 @@ int main(void) {
 	testMenu->RegisterTest<test::TestDecks>("Decks");
 	testMenu->RegisterTest<test::TestCardObj>("Card object", WINDOW_WIDTH, WINDOW_HEIGHT);
 	testMenu->RegisterTest<test::TestPlayerDeck>("Player Deck", WINDOW_WIDTH, WINDOW_HEIGHT);
+	testMenu->RegisterTest<test::TestGameDeck>("Game Deck", WINDOW_WIDTH, WINDOW_HEIGHT);
 
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
@@ -90,7 +92,6 @@ int main(void) {
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
         renderer.Clear();
-
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
