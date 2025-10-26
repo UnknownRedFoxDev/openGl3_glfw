@@ -34,8 +34,8 @@ int main(int argc, char **argv)
 {
     NOB_GO_REBUILD_URSELF(argc, argv);
 
-    char *program_name = shift(argv, argc);
-    UNUSED(program_name);
+    // Used to be the program name
+    (void)shift(argv, argc);
     Cmd cmd = {0};
     bool run = false;
 
