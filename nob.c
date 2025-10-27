@@ -14,7 +14,7 @@ bool rebuild_modules(Cmd *cmd, int modulesCount, const char **modules) {
         const char *output_path = temp_sprintf("%s%s.o", BUILD_FOLDER, modules[i]);
         const char *input_path  = temp_sprintf("%s%s.cpp", SRC_FOLDER, modules[i]);
         if (needs_rebuild1(output_path, input_path)) {
-            // TODO: Use a string_builder from nob to add each module that is compiled, into a global sb used for the main compiling. SEE L.103
+            // See TODO(2025-10-28 00:51:45)
             cmd_append(cmd, "g++",
                     "-std=c++17",
                     "-Wall", "-Wextra", "-O0", "-ggdb",
@@ -25,6 +25,7 @@ bool rebuild_modules(Cmd *cmd, int modulesCount, const char **modules) {
                     output_path);
             // append to sb the output_path
             // See nob.h for the exact functions. It's 11:36 pm and I'm tired. I thought of that while watch tsoding use string builders in:
+            // AH ha it's now 00:53 am and I'm rocking my ass with this new auto/macro to make TODOs, thanks Tsoding!
             // https://youtu.be/kwMkrehm-Jg?t=5093
             if (!cmd_run(cmd, .async = &procs)) return_defer(false);
         }
@@ -103,7 +104,7 @@ int main(int argc, char **argv)
     if (!rebuild_modules(&cmd, MODULE_COUNT, modules)) return 1;
     if (!rebuild_modules(&cmd, VENDOR_COUNT, vendors)) return 1;
 
-    // TODO: Rather than iterate twice over the arrays, use a string build to append every compiled modules after the includes. SEE L.110
+    // See TODO(2025-10-28 00:43:02)
     if (needs_rebuild1(BUILD_FOLDER"main", SRC_FOLDER"main.cpp")) {
             cmd_append(&cmd, "g++",
                     "-std=c++17",
@@ -132,3 +133,5 @@ int main(int argc, char **argv)
 
     return 0;
 }
+// TODO(2025-10-28 00:43:02): Use string build rather than go through multiple arrays of strings twice
+// TODO(2025-10-28 00:51:45): Use a string_builder from nob to add each module that is compiled, into a global sb used for the main compiling
