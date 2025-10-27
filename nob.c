@@ -7,7 +7,9 @@
 #define BUILD_FOLDER "build/"
 #define SRC_FOLDER   "src/"
 
-int rebuild_modules(Cmd *cmd, int modulesCount, const char **modules) {
+bool rebuild_modules(Cmd *cmd, int modulesCount, const char **modules) {
+    Procs procs = {0};
+    bool result = true;
     for (int i = 0; i < modulesCount; ++i) {
         const char *output_path = temp_sprintf("%s%s.o", BUILD_FOLDER, modules[i]);
         const char *input_path  = temp_sprintf("%s%s.cpp", SRC_FOLDER, modules[i]);
@@ -20,10 +22,14 @@ int rebuild_modules(Cmd *cmd, int modulesCount, const char **modules) {
                     input_path,
                     "-o",
                     output_path);
-            if (!cmd_run(cmd)) return 0;
+            if (!cmd_run(cmd, .async = &procs)) return_defer(false);
         }
     }
-    return 1;
+    if (!procs_flush(&procs)) return_defer(false);
+
+defer:
+    da_free(procs);
+    return result;
 }
 
 #define TEST_COUNT 11
