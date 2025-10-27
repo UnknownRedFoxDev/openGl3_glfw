@@ -14,6 +14,7 @@ bool rebuild_modules(Cmd *cmd, int modulesCount, const char **modules) {
         const char *output_path = temp_sprintf("%s%s.o", BUILD_FOLDER, modules[i]);
         const char *input_path  = temp_sprintf("%s%s.cpp", SRC_FOLDER, modules[i]);
         if (needs_rebuild1(output_path, input_path)) {
+            // TODO: Use a string_builder from nob to add each module that is compiled, into a global sb used for the main compiling. SEE L.103
             cmd_append(cmd, "g++",
                     "-std=c++17",
                     "-Wall", "-Wextra", "-O0", "-ggdb",
@@ -22,6 +23,9 @@ bool rebuild_modules(Cmd *cmd, int modulesCount, const char **modules) {
                     input_path,
                     "-o",
                     output_path);
+            // append to sb the output_path
+            // See nob.h for the exact functions. It's 11:36 pm and I'm tired. I thought of that while watch tsoding use string builders in:
+            // https://youtu.be/kwMkrehm-Jg?t=5093
             if (!cmd_run(cmd, .async = &procs)) return_defer(false);
         }
     }
@@ -99,11 +103,15 @@ int main(int argc, char **argv)
     if (!rebuild_modules(&cmd, MODULE_COUNT, modules)) return 1;
     if (!rebuild_modules(&cmd, VENDOR_COUNT, vendors)) return 1;
 
+    // TODO: Rather than iterate twice over the arrays, use a string build to append every compiled modules after the includes. SEE L.110
     if (needs_rebuild1(BUILD_FOLDER"main", SRC_FOLDER"main.cpp")) {
             cmd_append(&cmd, "g++",
                     "-std=c++17",
                     "-Wall", "-Wextra", "-O0", "-ggdb",
                     "-Isrc", "-Isrc/vendor", "-Isrc/tests");
+            /*
+             * cmd_append(&cmd, sb->items);
+             */
             for (int i = 0; i < TEST_COUNT; ++i) {
                 cmd_append(&cmd, temp_sprintf("%s%s.o", BUILD_FOLDER, modules[i]));
             }
