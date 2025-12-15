@@ -17,6 +17,8 @@
 #include "TestCardObj.h"
 #include "TestPlayerDeck.h"
 #include "TestGameDeck.h"
+#include <iostream>
+#include <print>
 
 #include "nob/nob.h"
 
@@ -25,10 +27,8 @@ constexpr int WINDOW_WIDTH = 1920, WINDOW_HEIGHT = 1080;
 int main(void) {
     // TODO("Use The Tracy Profiler (tracy) with the guide manual (in downloads)");
     if (!glfwInit()) {
-#if DEBUG
-        std::cerr << __FILE__ << ":" << __LINE__ <<  " - Unable to initialise glfw" << std::endl;
-#endif
-        return -1;
+        std::print(std::cerr, "{0}:{1} - Unable to initialize glfw\n", __FILE__, __LINE__);
+        return 1;
     }
 
     GLFWwindow* window;
@@ -40,21 +40,17 @@ int main(void) {
 
     window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Glfw learning with opengl <3", NULL, NULL);
     if (!window) {
-#if DEBUG
-        std::cerr << __FILE__ << ":" << __LINE__ <<  " - Unable to create window" << std::endl;
-#endif
+        std::print(std::cerr, "{0}:{1} - Unable to create\n", __FILE__, __LINE__);
         glfwTerminate();
-        return -2;
+        return 1;
     }
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
 
     if (glewInit() != GLEW_OK) {
-#if DEBUG
-        std::cerr << __FILE__ << ":" << __LINE__ <<  " - Unable to initialize GLEW" << std::endl;
-#endif
-        return -3;
+        std::print(std::cerr, "{0}:{1} - Unable to initialize GLEW\n", __FILE__, __LINE__);
+        return 1;
     }
 
     GLCall(glEnable(GL_BLEND));
@@ -127,5 +123,6 @@ int main(void) {
 
     glfwDestroyWindow(window);
     glfwTerminate();
+    // grep search "return" in std_image there's a "return why" lmao
     return 0;
 }

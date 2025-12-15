@@ -1,11 +1,13 @@
 #include <string.h>
 #define NOB_IMPLEMENTATION
 #define NOB_STRIP_PREFIX
+#define NOB_EXPERIMENTAL_DELETE_OLD
 #include "nob.h"
 #include <stdbool.h>
 
 #define BUILD_FOLDER "build/"
 #define SRC_FOLDER   "src/"
+#define CPP_VERSION  "c++23"
 
 bool rebuild_modules(Cmd *cmd, int modulesCount, const char **modules) {
     Procs procs = {0};
@@ -16,7 +18,7 @@ bool rebuild_modules(Cmd *cmd, int modulesCount, const char **modules) {
         if (needs_rebuild1(output_path, input_path)) {
             // See TODO(2025-10-28 00:51:45)
             cmd_append(cmd, "g++",
-                    "-std=c++17",
+                    "-std="CPP_VERSION,
                     "-Wall", "-Wextra", "-O0", "-ggdb",
                     "-Isrc", "-Isrc/vendor", "-Isrc/tests",
                     "-c",
@@ -25,7 +27,6 @@ bool rebuild_modules(Cmd *cmd, int modulesCount, const char **modules) {
                     output_path);
             // append to sb the output_path
             // See nob.h for the exact functions. It's 11:36 pm and I'm tired. I thought of that while watch tsoding use string builders in:
-            // AH ha it's now 00:53 am and I'm rocking my ass with this new auto/macro to make TODOs, thanks Tsoding!
             // https://youtu.be/kwMkrehm-Jg?t=5093
             if (!cmd_run(cmd, .async = &procs)) return_defer(false);
         }
@@ -107,7 +108,7 @@ int main(int argc, char **argv)
     // See TODO(2025-10-28 00:43:02)
     if (needs_rebuild1(BUILD_FOLDER"main", SRC_FOLDER"main.cpp")) {
             cmd_append(&cmd, "g++",
-                    "-std=c++17",
+                    "-std="CPP_VERSION,
                     "-Wall", "-Wextra", "-O0", "-ggdb",
                     "-Isrc", "-Isrc/vendor", "-Isrc/tests");
             /*

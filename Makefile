@@ -6,7 +6,7 @@ SRCS := $(shell find $(SRC_DIR) -name '*.cpp')
 OBJS := $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SRCS))
 LIBS := -lGL -lglfw -lGLEW
 INCLUDES := -Isrc -Isrc/vendor -Isrc/tests
-CXXFLAGS := -std=c++17 -Wall -Wextra -O0 -ggdb
+CXXFLAGS := -std=c++23 -Wall -Wextra -O0 -ggdb
 
 all: $(BUILD_DIR)/$(OUTPUT)
 $(BUILD_DIR)/$(OUTPUT): $(OBJS) | $(BUILD_DIR)
